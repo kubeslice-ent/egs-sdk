@@ -60,12 +60,6 @@ We welcome contributions! Please open an issue or submit a pull request with you
 
 ---
 
-## License 📄
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
 ## Support 💬
 
 For issues, feature requests, or questions, please visit the [GitHub Issues](https://github.com/smart-scaler/egs-sdk/issues) page.
@@ -80,5 +74,5 @@ For issues, feature requests, or questions, please visit the [GitHub Issues](htt
 
 ---
 
-_For more detailed information, refer to the [Elastic GPU Service Overview](https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/)._
-```
+For more detailed information, refer to the [Elastic GPU Service Overview](https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/)
+
