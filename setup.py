@@ -19,7 +19,7 @@ setup(
     ),
     long_description_content_type="text/markdown",
     author="Smart Scaler",
-    author_email="support@smartscaler.io",
+    author_email="support@avesha.io",
     url="https://github.com/smart-scaler/egs-sdk.git",
     packages=find_packages(),
     install_requires=[
