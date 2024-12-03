@@ -1,3 +1,4 @@
+import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import WorkspaceAlreadyExists, BadParameters, UnhandledException
 from egs.internal.workspace.create_workspace_data import CreateWorkspaceRequest, CreateWorkspaceResponse
@@ -15,9 +16,9 @@ def create_workspace(
         email: str,
         authenticated_session: AuthenticatedSession = None
 ) -> str:
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = CreateWorkspaceRequest(
         workspace_name=workspace_name,
         clusters=clusters,
@@ -38,9 +39,9 @@ def delete_workspace(
         workspace_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = DeleteWorkspaceRequest(
         workspace_name=workspace_name
     )
@@ -52,9 +53,9 @@ def delete_workspace(
 def list_workspaces(
         authenticated_session: AuthenticatedSession = None
 ) -> [Workspace]:
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace/list', 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
@@ -68,9 +69,9 @@ def get_workspace_kubeconfig(
         workspace_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = GenerateWorkspaceKubeConfigRequest(
         workspace_name=workspace_name
     )

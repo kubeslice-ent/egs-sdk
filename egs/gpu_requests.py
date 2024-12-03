@@ -1,3 +1,4 @@
+import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException, GpuAlreadyProvisioned, GpuAlreadyReleased
 from egs.internal.gpr.create_gpr_data import CreateGprRequest, CreateGprResponse
@@ -36,6 +37,9 @@ def request_gpu(
         exit_duration=exit_duration,
         priority=priority
     )
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     api_response = auth.client.invoke_sdk_operation('/api/v1/gpr', 'POST', req)
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
@@ -46,9 +50,9 @@ def cancel_gpu_request(
         request_id: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = DeleteGprRequest(
         gpr_id=request_id
     )
@@ -62,9 +66,9 @@ def update_gpu_request_priority(
         new_priority: int,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = UpdateGprPriorityRequest(
         gpr_id=request_id,
         priority=new_priority
@@ -80,9 +84,9 @@ def update_gpu_request_name(
         new_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = UpdateGprNameRequest(
         gpr_id=request_id,
         gpr_name=new_name
@@ -97,9 +101,9 @@ def release_gpu(
         request_id: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     req = GprReleaseRequest(
         gpr_id=request_id
     )
@@ -113,9 +117,9 @@ def gpu_request_status(
         request_id: str,
         authenticated_session: AuthenticatedSession = None
 ) -> GpuRequestData:
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     api_response = auth.client.invoke_sdk_operation('/api/v1/gpr?gprId=' + request_id, 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
@@ -126,9 +130,9 @@ def gpu_request_status_for_workspace(
         workspace_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    # auth = _authenticated_session
-    # if authenticated_session is not None:
-    auth = authenticated_session
+    auth = egs.get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
     api_response = auth.client.invoke_sdk_operation('/api/v1/gpr/list?sliceName=' + workspace_name, 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
