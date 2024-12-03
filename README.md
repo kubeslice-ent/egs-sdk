@@ -19,13 +19,13 @@ The **Elastic GPU Service (EGS)** SDK provides tools and workflows for efficient
 To install the `egs-sdk` package, use the following command:
 
 ```bash
-pip install git+https://github.com/smart-scaler/egs-sdk.git
+pip install git+https://github.com/kubeslice-ent/egs-sdk.git
 ```
 
 If you wish to install a specific branch or version, specify it like this:
 
 ```bash
-pip install git+https://github.com/smart-scaler/egs-sdk.git@<branch_or_tag_name>
+pip install git+https://github.com/kubeslice-ent/egs-sdk.git@<branch_or_tag_name>
 ```
 
 Ensure you have Python 3.7 or higher installed on your system.
@@ -39,7 +39,7 @@ Ensure you have Python 3.7 or higher installed on your system.
 To clone the repository and set up the development environment:
 
 ```bash
-git clone https://github.com/smart-scaler/egs-sdk.git
+git clone https://github.com/kubeslice-ent/egs-sdk.git
 cd egs-sdk
 pip install -e .
 ```
@@ -62,15 +62,15 @@ We welcome contributions! Please open an issue or submit a pull request with you
 
 ## Support 💬
 
-For issues, feature requests, or questions, please visit the [GitHub Issues](https://github.com/smart-scaler/egs-sdk/issues) page.
+For issues, feature requests, or questions, please visit the [GitHub Issues](https://github.com/kubeslice-ent/egs-sdk/issues) page.
 
 ---
 
 ## Resources 📚
 
 - **Documentation**: [https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/](https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/)
-- **Source Code**: [https://github.com/smart-scaler/egs-sdk](https://github.com/smart-scaler/egs-sdk)
-- **Tracker**: [https://github.com/smart-scaler/egs-sdk/issues](https://github.com/smart-scaler/egs-sdk/issues)
+- **Source Code**: [https://github.com/kubeslice-ent/egs-sdk](https://github.com/kubeslice-ent/egs-sdk)
+- **Tracker**: [https://github.com/kubeslice-ent/egs-sdk/issues](https://github.com/kubeslice-ent/egs-sdk/issues)
 
 ---
 
