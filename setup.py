@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Smart Scaler",
     author_email="support@avesha.io",
-    url="https://github.com/smart-scaler/egs-sdk.git",
+    url="https://github.com/kubeslice-ent/egs-sdk.git",
     packages=find_packages(),
     install_requires=[
         # Add dependencies here, e.g., "requests>=2.25.1", "pandas>=1.3.0"
@@ -40,8 +40,8 @@ setup(
     python_requires=">=3.7",
     keywords="EGS SDK Kubernetes GPU Resource Management Smart Scaler LLM-Ops",
     project_urls={
-        "Documentation": "https://github.com/smart-scaler/egs-sdk#readme",
-        "Source": "https://github.com/smart-scaler/egs-sdk.git",
-        "Tracker": "https://github.com/smart-scaler/egs-sdk/issues",
+        "Documentation": "https://github.com/kubeslice-ent/egs-sdk#readme",
+        "Source": "https://github.com/kubeslice-ent/egs-sdk.git",
+        "Tracker": "https://github.com/kubeslice-ent/egs-sdk/issues",
     },
 )
