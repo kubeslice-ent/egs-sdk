@@ -2,7 +2,7 @@ class GenerateWorkspaceKubeConfigRequest(object):
     def __init__(
             self,
             workspace_name: str):
-        self.workspace_name = workspace_name
+        self.workspaceName = workspace_name
 
 class GenerateWorkspaceKubeConfigResponse(object):
     def __init__(

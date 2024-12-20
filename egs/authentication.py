@@ -5,7 +5,7 @@ from egs.internal.client.egs_core_apis_client import new_egs_core_apis_client
 def authenticate(
         endpoint: str,
         api_key: str,
-        sdk_default: bool
+        sdk_default: bool = False
 ) -> AuthenticatedSession:
     auth = new_egs_core_apis_client(endpoint, api_key)
     _ = auth.exchange_api_key_for_access_token()
