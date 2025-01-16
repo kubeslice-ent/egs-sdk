@@ -1,7 +1,8 @@
 from egs.util.string_util import serialize
 
 class EgsApplicationException(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         self.args = args
         super().__init__(args, kwargs)
         pass
@@ -10,7 +11,8 @@ class EgsApplicationException(Exception):
         return serialize(self)
 
 class ApiKeyExpired(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -18,7 +20,8 @@ class ApiKeyExpired(Exception):
         return serialize(self)
 
 class ApiKeyInvalid(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -26,7 +29,8 @@ class ApiKeyInvalid(Exception):
         return serialize(self)
 
 class ApiKeyNotFound(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -34,7 +38,8 @@ class ApiKeyNotFound(Exception):
         return serialize(self)
 
 class GpuAlreadyProvisioned(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -42,7 +47,8 @@ class GpuAlreadyProvisioned(Exception):
         return serialize(self)
 
 class GpuAlreadyReleased(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -50,7 +56,8 @@ class GpuAlreadyReleased(Exception):
         return serialize(self)
 
 class ServerUnreachable(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -58,7 +65,8 @@ class ServerUnreachable(Exception):
         return serialize(self)
 
 class Unauthorized(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -66,7 +74,8 @@ class Unauthorized(Exception):
         return serialize(self)
 
 class WorkspaceAlreadyExists(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -74,8 +83,8 @@ class WorkspaceAlreadyExists(Exception):
         return serialize(self)
 
 class BadParameters(Exception):
-    def __init__(self, api_response, *args, **kwargs):
-        self.api_response = api_response
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 
@@ -83,7 +92,8 @@ class BadParameters(Exception):
         return serialize(self)
 
 class UnhandledException(EgsApplicationException):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value: any, *args, **kwargs):
+        self.exception = value
         super().__init__(args, kwargs)
         pass
 

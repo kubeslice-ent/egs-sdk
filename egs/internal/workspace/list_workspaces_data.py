@@ -41,7 +41,10 @@ class Workspace(object):
 
 class ListWorkspacesResponse(object):
     def __init__(self, workspaces: [Workspace]):
-        self.workspaces = workspaces
+        ws = []
+        for w in workspaces:
+            ws.append(Workspace(**w))
+        self.workspaces = ws
 
     def __str__(self):
         return serialize(self)

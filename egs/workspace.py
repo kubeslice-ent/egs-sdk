@@ -1,6 +1,6 @@
 import egs
 from egs.authenticated_session import AuthenticatedSession
-from egs.exceptions import WorkspaceAlreadyExists, BadParameters, UnhandledException
+from egs.exceptions import WorkspaceAlreadyExists, BadParameters, UnhandledException, Unauthorized
 from egs.internal.workspace.create_workspace_data import CreateWorkspaceRequest, CreateWorkspaceResponse
 from egs.internal.workspace.delete_workspace_data import DeleteWorkspaceRequest, DeleteWorkspaceResponse
 from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse, Workspace
@@ -16,9 +16,7 @@ def create_workspace(
         email: str,
         authenticated_session: AuthenticatedSession = None
 ) -> str:
-    auth = egs.get_global_session()
-    if authenticated_session is not None:
-        auth = authenticated_session
+    auth = egs.get_authenticated_session(authenticated_session)
     req = CreateWorkspaceRequest(
         workspace_name=workspace_name,
         clusters=clusters,
@@ -39,9 +37,7 @@ def delete_workspace(
         workspace_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    auth = egs.get_global_session()
-    if authenticated_session is not None:
-        auth = authenticated_session
+    auth = egs.get_authenticated_session(authenticated_session)
     req = DeleteWorkspaceRequest(
         workspace_name=workspace_name
     )
@@ -52,26 +48,18 @@ def delete_workspace(
 
 def list_workspaces(
         authenticated_session: AuthenticatedSession = None
-) -> [Workspace]:
-    auth = egs.get_global_session()
-    if authenticated_session is not None:
-        auth = authenticated_session
+) -> ListWorkspacesResponse:
+    auth = egs.get_authenticated_session(authenticated_session)
     api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace/list', 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
-    workspaces = ListWorkspacesResponse(**api_response.data).workspaces
-    w = []
-    for i in workspaces:
-        w.append(Workspace(**i))
-    return w
+    return ListWorkspacesResponse(**api_response.data)
 
 def get_workspace_kubeconfig(
         workspace_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
-    auth = egs.get_global_session()
-    if authenticated_session is not None:
-        auth = authenticated_session
+    auth = egs.get_authenticated_session(authenticated_session)
     req = GenerateWorkspaceKubeConfigRequest(
         workspace_name=workspace_name
     )

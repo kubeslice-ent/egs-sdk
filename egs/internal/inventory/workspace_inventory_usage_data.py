@@ -24,7 +24,6 @@ class ListWorkspaceInventoryUsageResponse(object):
         iu = []
         for i in items:
             iu.append(InventoryUsage(**i))
-
         self.workspace_inventory = iu
 
     def __str__(self):

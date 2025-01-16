@@ -1,3 +1,5 @@
+from typing import Optional
+
 from egs.util.string_util import serialize
 
 class Resources(object):
@@ -16,13 +18,13 @@ class Resources(object):
 class ModelSpec(object):
     def __init__(
             self,
-            model_name: str,
-            storage_uri: str,
-            args: [str],
-            secret: dict,
-            resources: Resources
+            model_format_name: str = None,
+            storage_uri: str = None,
+            args: [str] = None,
+            secret: dict = None,
+            resources: Resources = None,
     ):
-        self.modelName = model_name
+        self.modelName = model_format_name
         self.storageURI = storage_uri
         self.args = args
         self.secret = secret
@@ -64,15 +66,15 @@ class CreateInferenceEndpointRequest(object):
             endpoint_name: str,
             gpu_spec: GpuSpec,
             workspace: str,
-            model_spec: ModelSpec,
-            rawModelSpec: str
+            model_spec: Optional[ModelSpec],
+            raw_model_spec: Optional[str]
     ):
         self.clusterName = cluster_name
         self.endpointName = endpoint_name
         self.gpuSpec = gpu_spec
         self.workspace = workspace
         self.modelSpec = model_spec
-        self.rawModelSpec = rawModelSpec
+        self.rawModelSpec = raw_model_spec
 
     def __str__(self):
         return serialize(self)
