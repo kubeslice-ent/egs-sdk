@@ -92,7 +92,7 @@ class Inventory(object):
             *args, **kwargs
     ):
         self.gpu_node_name = gpuNodeName
-        self.gpu_shape = gpuShape
+        self.gpu_shape = gpuModelName
         self.gpu_model_name = gpuModelName
         self.instance_type = instanceType
         self.cluster_name = clusterName

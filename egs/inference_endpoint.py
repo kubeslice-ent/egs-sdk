@@ -45,7 +45,7 @@ def create_inference_endpoint_with_custom_model_spec(
         endpoint_name: str,
         workspace_name: str,
         raw_model_spec: str,
-        gpu_spec: GpuSpec,
+        gpu_spec: GpuSpec | None,
         authenticated_session: AuthenticatedSession = None
 ) -> CreateInferenceEndpointResponse:
     auth = egs.get_authenticated_session(authenticated_session)

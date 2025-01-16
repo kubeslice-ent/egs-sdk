@@ -3,17 +3,20 @@ from egs.util.string_util import serialize
 class InventoryUsage(object):
     def __init__(
             self,
-            nodeName: [str],
             instanceType: str,
-            memory: int,
-            totalGpus: int,
-            gpuShape: str
+            gpuShape: str,
+            memoryPerGpu: int,
+            gpuPerNode: int,
+            totalGpuNodes: int,
+            clusterName: str,
+            *args, **kwargs
     ):
-        self.node_name = nodeName
         self.instance_type = instanceType
-        self.memory = memory
-        self.total_gpus = totalGpus
         self.gpu_shape = gpuShape
+        self.memory_per_gpu = memoryPerGpu
+        self.gpu_per_node = gpuPerNode
+        self.total_gpu_nodes = totalGpuNodes
+        self.cluster_name = clusterName
 
     def __str__(self):
         return serialize(self)
