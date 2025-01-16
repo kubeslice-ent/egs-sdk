@@ -4,6 +4,7 @@ import json
 from egs.exceptions import ApiKeyInvalid, ApiKeyExpired, ApiKeyNotFound, ServerUnreachable, Unauthorized
 from egs.internal.authentication.authentication_data import AuthenticationRequest, AuthenticationResponse
 from egs.internal.client.api_reponse import ApiResponse
+from egs.util.string_util import serialize
 
 
 class EgsCoreApisClient(object):
@@ -84,6 +85,11 @@ class EgsCoreApisClient(object):
         if res.status == 401 or res.status == 403:
             raise Unauthorized(res)
         return ApiResponse(**response)
+
+
+    def __str__(self):
+        return serialize(self)
+
 
 def new_egs_core_apis_client(server_url: str, api_key: str) -> EgsCoreApisClient:
     return EgsCoreApisClient(server_url, api_key)

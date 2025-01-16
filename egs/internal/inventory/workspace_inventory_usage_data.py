@@ -1,3 +1,5 @@
+from egs.util.string_util import serialize
+
 class InventoryUsage(object):
     def __init__(
             self,
@@ -13,6 +15,9 @@ class InventoryUsage(object):
         self.total_gpus = totalGpus
         self.gpu_shape = gpuShape
 
+    def __str__(self):
+        return serialize(self)
+
 
 class ListWorkspaceInventoryUsageResponse(object):
     def __init__(self, items: [InventoryUsage], *args, **kwargs):
@@ -21,3 +26,6 @@ class ListWorkspaceInventoryUsageResponse(object):
             iu.append(InventoryUsage(**i))
 
         self.workspace_inventory = iu
+
+    def __str__(self):
+        return serialize(self)

@@ -1,6 +1,11 @@
+from egs.util.string_util import serialize
+
 class ListWorkspacesRequest(object):
     def __init__(self):
         pass
+
+    def __str__(self):
+        return serialize(self)
 
 class Namespace(object):
     def __init__(
@@ -9,6 +14,9 @@ class Namespace(object):
             clusters: [str]):
         self.namespace = namespace
         self.clusters = clusters
+
+    def __str__(self):
+        return serialize(self)
 
 
 class Workspace(object):
@@ -28,6 +36,12 @@ class Workspace(object):
         self.clusters = clusters
         self.namespaces = namespaces
 
+    def __str__(self):
+        return serialize(self)
+
 class ListWorkspacesResponse(object):
     def __init__(self, workspaces: [Workspace]):
         self.workspaces = workspaces
+
+    def __str__(self):
+        return serialize(self)

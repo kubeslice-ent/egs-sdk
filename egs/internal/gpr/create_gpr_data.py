@@ -1,3 +1,5 @@
+from egs.util.string_util import serialize
+
 class CreateGprRequest(object):
     def __init__(
             self,
@@ -23,6 +25,13 @@ class CreateGprRequest(object):
         self.memoryPerGPU = memory_per_gpu
         self.gpuShape = gpu_name
 
+
+    def __str__(self):
+        return serialize(self)
+
 class CreateGprResponse(object):
     def __init__(self, gprId: str, *args, **kwargs):
         self.gpr_id = gprId
+
+    def __str__(self):
+        return serialize(self)

@@ -1,3 +1,5 @@
+from egs.util.string_util import serialize
+
 class GpuRequestStatus(object):
     def __init__(
             self,
@@ -23,6 +25,9 @@ class GpuRequestStatus(object):
         self.internal_state = internalState
         self.retry_count = retryCount
         self.delayed_count = delayedCount
+
+    def __str__(self):
+        return serialize(self)
 
 class GpuRequestData(object):
     def __init__(
@@ -70,6 +75,9 @@ class GpuRequestData(object):
         self.enable_secondary_network = enableSecondaryNetwork
         self.status = GpuRequestStatus(**status)
 
+    def __str__(self):
+        return serialize(self)
+
 class WorkspaceGpuRequestDataResponse(object):
     def __init__(
             self,
@@ -80,3 +88,6 @@ class WorkspaceGpuRequestDataResponse(object):
         for i in items:
             iu.append(GpuRequestData(**i))
         self.items = iu
+
+    def __str__(self):
+        return serialize(self)
