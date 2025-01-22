@@ -1,9 +1,11 @@
+from egs.exceptions import Unauthorized
 
 global _authenticated_session
 from egs import authentication
 from egs import inventory_operations
 from egs import workspace
 from egs import gpu_requests
+from egs import inference_endpoint
 
 authenticate = authentication.authenticate
 
@@ -23,11 +25,30 @@ release_gpu = gpu_requests.release_gpu
 gpu_request_status = gpu_requests.gpu_request_status
 gpu_request_status_for_workspace = gpu_requests.gpu_request_status_for_workspace
 
+list_inference_endpoint = inference_endpoint.list_inference_endpoints
+create_inference_endpoint = inference_endpoint.create_inference_endpoint
+create_inference_endpoint_with_custom_model_spec = inference_endpoint.create_inference_endpoint_with_custom_model_spec
+describe_inference_endpoint = inference_endpoint.describe_inference_endpoint
+delete_inference_endpoint = inference_endpoint.delete_inference_endpoint
+
 
 def update_global_session(session):
     global _authenticated_session
     _authenticated_session = session
 
+
 def get_global_session():
     global _authenticated_session
     return _authenticated_session
+
+
+def get_authenticated_session(authenticated_session):
+    auth = get_global_session()
+    if authenticated_session is not None:
+        auth = authenticated_session
+    if auth is None:
+        raise Unauthorized('No authenticated session found')
+    return auth
+
+
+update_global_session(None)

@@ -1,6 +1,11 @@
+from egs.util.string_util import serialize
+
 class ListWorkspaceGprRequest(object):
     def __init__(self, workspace_name: str):
         self.workspace_name = workspace_name
+
+    def __str__(self):
+        return serialize(self)
 
 
 class GprStatus(object):
@@ -27,6 +32,9 @@ class GprStatus(object):
         self.internal_state = internal_state
         self.retry_count = retry_count
         self.delayed_count = delayed_count
+
+    def __str__(self):
+        return serialize(self)
 
 
 class GprData(object):
