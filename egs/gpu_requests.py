@@ -17,7 +17,7 @@ def request_gpu(
         gpu_per_node_count: int,
         memory_per_gpu: int,
         instance_type: str,
-        gpu_name: str,
+        gpu_shape: str,
         exit_duration: str,
         priority: int,
         authenticated_session: AuthenticatedSession = None
@@ -31,7 +31,7 @@ def request_gpu(
         gpu_per_node_count=gpu_per_node_count,
         memory_per_gpu=memory_per_gpu,
         instance_type=instance_type,
-        gpu_name=gpu_name,
+        gpu_shape=gpu_shape,
         exit_duration=exit_duration,
         priority=priority
     )

@@ -57,11 +57,13 @@ def list_workspaces(
 
 def get_workspace_kubeconfig(
         workspace_name: str,
+        cluster_name: str,
         authenticated_session: AuthenticatedSession = None
 ):
     auth = egs.get_authenticated_session(authenticated_session)
     req = GenerateWorkspaceKubeConfigRequest(
-        workspace_name=workspace_name
+        workspace_name=workspace_name,
+        cluster_name=cluster_name
     )
     api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace/kube-config', 'POST', req)
     if api_response.status_code != 200:

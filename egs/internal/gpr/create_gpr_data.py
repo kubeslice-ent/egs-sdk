@@ -10,7 +10,7 @@ class CreateGprRequest(object):
             gpu_per_node_count: int,
             memory_per_gpu: int,
             instance_type: str,
-            gpu_name: str,
+            gpu_shape: str,
             exit_duration: str,
             priority: int,
     ):
@@ -23,7 +23,7 @@ class CreateGprRequest(object):
         self.numberOfGPUNodes = node_count
         self.priority = priority
         self.memoryPerGPU = memory_per_gpu
-        self.gpuShape = gpu_name
+        self.gpuShape = gpu_shape
 
 
     def __str__(self):

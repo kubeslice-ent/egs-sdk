@@ -65,10 +65,11 @@ def create_inference_endpoint_with_custom_model_spec(
 def describe_inference_endpoint(
         workspace_name: str,
         endpoint_name: str,
+        cluster_name: str,
         authenticated_session: AuthenticatedSession = None
 ) -> DescribeInferenceEndpointResponse:
     auth = egs.get_authenticated_session(authenticated_session)
-    api_response = auth.client.invoke_sdk_operation(f"/api/v1/inference-endpoint?workspace={workspace_name}&endpoint={endpoint_name}", 'GET')
+    api_response = auth.client.invoke_sdk_operation(f"/api/v1/inference-endpoint?workspace={workspace_name}&endpoint={endpoint_name}&cluster={cluster_name}", 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return DescribeInferenceEndpointResponse(**api_response.data)
@@ -76,12 +77,14 @@ def describe_inference_endpoint(
 def delete_inference_endpoint(
         workspace_name: str,
         endpoint_name: str,
+        cluster_name: str,
         authenticated_session: AuthenticatedSession = None
 ) -> DeleteInferenceEndpointResponse:
     auth = egs.get_authenticated_session(authenticated_session)
     req = DeleteInferenceEndpointRequest(
         workspace_name=workspace_name,
-        endpoint_name=endpoint_name
+        endpoint_name=endpoint_name,
+        cluster_name=cluster_name
     )
     api_response = auth.client.invoke_sdk_operation("/api/v1/inference-endpoint", 'DELETE', req)
     if api_response.status_code != 200:
