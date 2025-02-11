@@ -107,8 +107,6 @@ def main():
         # print("Waiting for 60 seconds ...")
         # time.sleep(60)
 
-        # kubectl get svc and get the external ip
-
         # # Create load against the service
         # print("Creating load against the service...")
         # external_ip = print(subprocess.run(["kubectl", "get", "svc", "llm-service", "-o", "jsonpath={.status.loadBalancer.ingress[0].hostname}"], capture_output=True, text=True, check=True).stdout.strip())
