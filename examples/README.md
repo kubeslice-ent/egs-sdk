@@ -18,17 +18,17 @@
 1. Generate Config & Create Workspaces
 
 ```sh
-python script.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin create
+python runner.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin create
 ```
 
 2. Create GPRs
 
 ```sh
-python script.py --teams team-beta --kubeconfig /path/to/kubeconfig --user
+python runner.py --teams team-beta --kubeconfig /path/to/kubeconfig --user
 ```
 
 3. Delete Workspaces
 
 ```sh
-python script.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin delete
+python runner.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin delete
 ```
