@@ -1,5 +1,6 @@
 ## Pre-Requisites
 
+- Install EGS using the [EGS Installation Guide](https://docs.avesha.io/documentation/enterprise-egs/1.10.0/python-sdk/install-sdk#install-sdk)
 - 💻 Access to a Linux terminal connected to the internet
 - 📦 `kubectl` installed
 - ☁️ EGS installed on a Kubernetes cluster
