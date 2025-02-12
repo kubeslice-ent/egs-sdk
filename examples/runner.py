@@ -46,6 +46,7 @@ def run_script(script, action=None):
     cmd = ["python", script, "config.json"]
     if action:
         cmd.append(action)
+    print(f"Running command: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
 def main():
