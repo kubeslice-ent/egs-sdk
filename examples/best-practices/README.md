@@ -44,11 +44,11 @@ workspaces:
     namespaces:
       - "namespace-b2"
       - "namespace-b1"
-    username: "admin-1"
-    email: "admin1@acme.io"
     clusters:
       - "worker-1"
       # - "worker-2" (Optional additional cluster)
+    username: "admin-1"
+    email: "admin1@acme.io"
 ```
 
 ### YAML Fields Description
@@ -61,17 +61,19 @@ name: Name of the workspace.
 
 namespaces: List of namespaces associated with the workspace.
 
+clusters: List of clusters to associate with the workspace.
+
 username: The username associated with the workspace.
 
 email: Contact email for the workspace.
 
-clusters: List of clusters to associate with the workspace.
 
 ## Running the Script
 
 To create workspaces based on the configuration file, run:
-
+```bash
 python create_workspace.py --config workspace_config.yaml
+```
 
 ## Script Functionality
 
