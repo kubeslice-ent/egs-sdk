@@ -22,9 +22,10 @@ The kubeconfig for the target cluster must be configured before running this scr
 ### Set environment variables:
 
 Ensure the following environment variables are set:
-
+```bash
 export EGS_ENDPOINT=<your-egs-endpoint>
 export EGS_API_KEY=<your-egs-api-key>
+```
 
 ### Python
 
@@ -36,6 +37,7 @@ Ensure you have Python 3.9 or higher installed on your system.
 
 The script uses a configuration file in YAML format. Below is an example structure:
 
+```bash
 projectname: "avesha"
 workspaces:
   - name: "workspace-b"
@@ -47,6 +49,7 @@ workspaces:
     clusters:
       - "worker-1"
       # - "worker-2" (Optional additional cluster)
+```
 
 ### YAML Fields Description
 
