@@ -85,6 +85,8 @@ def main():
 
         if operation == "create":
             # Admin Creates workspace
+            print(f"Creating workspace for team: {team}")
+            print(f"{WORKSPACE_NAME} {WORKSPACE_NAMESPACE} {CLUSTER_NAME} {USER_NAME} {USER_EMAIL}")
             workspace = create_workspace(auth, WORKSPACE_NAME, WORKSPACE_NAMESPACE, CLUSTER_NAME, USER_NAME, USER_EMAIL)
             
             print(f"Waiting for 10 seconds ...")

@@ -29,7 +29,7 @@ def generate_config(teams, kubeconfig):
         configs[team] = {
             "WORKSPACE_NAME": team,
             "WORKSPACE_NAMESPACE": [team],
-            "CLUSTER_NAME": os.getenv("EGS_CLUSTER_NAME"),
+            "CLUSTER_NAME": [os.getenv("EGS_CLUSTER_NAME")],
             "SECRET_NAME": f"kubeslice-rbac-rw-slice-{team}",
             "USER_NAME": f"{team}-user",
             "USER_EMAIL": f"{team}-user@avesha.io",
@@ -69,7 +69,7 @@ def main():
     if args.admin:
         run_script("admin_script.py", args.admin)
         if args.admin == "create":
-            print("Waiting for 120 seconds ...")
+            print("Waiting for 120 seconds for workspaces to be ready...")
             time.sleep(120)
     
     # Run user script if specified

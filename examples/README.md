@@ -14,22 +14,28 @@
    - `EGS_API_KEY` can be obtained from the EGS UI
    - `EGS_CLUSTER_NAME` is the name of the cluster in your EGS account
 
-### Manage Workspaces
-
-1. Generate Config & Create Workspaces
+2. To create a workspace for a team, run the following command:
 
 ```sh
-python runner.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin create
+python runner.py --teams team-beta team-gamma --kubeconfig /path/to/<admin>-kubeconfig --admin create
 ```
 
-2. Create GPRs
+- This will create a folder named `team-beta` and `team-gamma` in the current directory with the following files (for each team):
+  - api-token.txt
+  - `team-<team-name>-kubeconfig.yaml`
+  - `team-<team-name>-token.txt`
+- `team-<team-name>-kubeconfig.yaml` and `team-<team-name>-token.txt` are going to be populated by the script.
+- User needs to log in to the EGS UI with the token from `team-<team-name>-token.txt` and create an `api-token` in the EGS UI.
+- That api-token needs to be saved in api-token.txt
+
+3. Once the api-token is saved in api-token.txt, run the following command to create GPRs for the team:
 
 ```sh
-python runner.py --teams team-beta --kubeconfig /path/to/kubeconfig --user
+python runner.py --teams team-beta --kubeconfig /path/to/<team-name>-kubeconfig --user
 ```
 
-3. Delete Workspaces
+4. To delete the workspaces, run the following command:
 
 ```sh
-python runner.py --teams team-beta team-gamma --kubeconfig /path/to/kubeconfig --admin delete
+python runner.py --teams team-beta team-gamma --kubeconfig /path/to/<admin>-kubeconfig --admin delete
 ```
