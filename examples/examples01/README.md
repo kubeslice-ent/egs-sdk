@@ -1,5 +1,5 @@
 
-# EGS SDK with Best practices
+# EGS SDK Examples
 
 ## Prerequisites
 
