@@ -80,7 +80,7 @@ The make-gpr.py script is used to create a GPR.
 
 Syntax
 ```bash
-python make_gpr.py --cluster_name <cluster-name> --workspace_name <workspace-name> --priority <priority-number> --exit_duration <duration-in-minutes> --request_name <gpr-request-name> --gpu_shape <GPU shape>
+python make_gpr.py --cluster_name <cluster-name> --workspace_name <workspace-name> --priority <priority-number> --exit_duration <duration-in-0d0h0m> --request_name <gpr-request-name> --gpu_shape <GPU shape>
 ```
 
 
