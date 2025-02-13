@@ -13,6 +13,10 @@ class CreateGprRequest(object):
             gpu_shape: str,
             exit_duration: str,
             priority: int,
+            idle_timeout_duration: str,
+            enforce_idle_timeout: bool,
+            enable_eviction: bool,
+            requeue_on_failure: bool,
     ):
         self.gprName = request_name
         self.sliceName = workspace_name
@@ -24,6 +28,10 @@ class CreateGprRequest(object):
         self.priority = priority
         self.memoryPerGPU = memory_per_gpu
         self.gpuShape = gpu_shape
+        self.idleTimeOutDuration = idle_timeout_duration
+        self.enforceIdleTimeOut = enforce_idle_timeout
+        self.enableEviction = enable_eviction
+        self.requeueOnFailure = requeue_on_failure
 
 
     def __str__(self):

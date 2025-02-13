@@ -64,6 +64,14 @@ if __name__ == "__main__":
                         help="The duration for which the GPU is requested for")
     parser.add_argument("--gpu_shape",
                         help="GPU Shape")
+    parser.add_argument("--idle_timeout_duration",
+                        help="Release the GPU if it has been idle for this duration")
+    parser.add_argument("--enforce_idle_timeout",
+                        help="Enforce the idle timeout duration")
+    parser.add_argument("--enable_eviction",
+                        help="Enable eviction of the GPU")
+    parser.add_argument("--requeue_on_failure",
+                        help="Requeue the request on failure")
 
     args = parser.parse_args()
 
@@ -106,6 +114,10 @@ if __name__ == "__main__":
                                              gpu_shape=cur_inventory.gpu_shape,
                                              exit_duration=args.exit_duration,
                                              priority=args.priority,
+                                             idle_timeout_duration=args.idle_timeout_duration,
+                                             enforce_idle_timeout=args.enforce_idle_timeout == "true",
+                                             enable_eviction=args.enable_eviction == "true",
+                                             requeue_on_failure=args.requeue_on_failure == "true",
                                              authenticated_session=auth)
 
             print("GPR Created Successfully with gpu_request_id: ", gpu_request_id)
