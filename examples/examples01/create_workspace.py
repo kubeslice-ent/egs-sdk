@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
         if not args.config:
             raise ValueError("Configuration file path must be provided using --config argument.")
-        
+
         if not os.path.exists(args.config):
             raise FileNotFoundError(f"Missing the workspace configuration {args.config}")
 
