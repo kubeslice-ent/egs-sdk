@@ -38,7 +38,7 @@ def create_gpr_requests(auth, workspace_name, slices, CLUSTER_NAME):
             print(inventory["managed_nodes"][0]["memory"], inventory["managed_nodes"][0]["instance_type"], inventory["managed_nodes"][0]["gpu_shape"])
 
             request_name = f"{request_name}_{i+1}"
-            gpu_request_id = egs.request_gpu(request_name=request_name, workspace_name=workspace_name, cluster_name=CLUSTER_NAME[0], node_count=1, gpu_per_node_count=1, memory_per_gpu=int(inventory["managed_nodes"][0]["memory"]), instance_type=inventory["managed_nodes"][0]["instance_type"], gpu_shape=inventory["managed_nodes"][0]["gpu_shape"], exit_duration="0d0h3m", priority=priority, authenticated_session=auth)
+            gpu_request_id = egs.request_gpu(request_name=request_name, workspace_name=workspace_name, cluster_name=CLUSTER_NAME[0], node_count=1, gpu_per_node_count=1, memory_per_gpu=int(inventory["managed_nodes"][0]["memory"]), instance_type=inventory["managed_nodes"][0]["instance_type"], gpu_shape=inventory["managed_nodes"][0]["gpu_shape"], exit_duration="0d0h3m", priority=priority, idle_timeout_duration="0d0h1m", enforce_idle_timeout=false, enable_eviction=false, requeue_on_failure=false, authenticated_session=auth)
 
             print(f"GPR request {request_name}_{i+1} created successfully with GPU request ID '{gpu_request_id}'.")
 
