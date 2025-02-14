@@ -6,8 +6,11 @@ from egs import inventory_operations
 from egs import workspace
 from egs import gpu_requests
 from egs import inference_endpoint
+from egs import api_key
 
 authenticate = authentication.authenticate
+
+create_api_key = api_key.create_api_key
 
 create_workspace = workspace.create_workspace
 delete_workspace = workspace.delete_workspace
