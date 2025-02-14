@@ -7,7 +7,7 @@ def authenticate(
         api_key: str,
         sdk_default: bool = False
 ) -> AuthenticatedSession:
-    auth = new_egs_core_apis_client(endpoint, api_key)
+    auth = new_egs_core_apis_client(endpoint, api_key=api_key)
     _ = auth.exchange_api_key_for_access_token()
     auth_session = AuthenticatedSession(auth, sdk_default)
     if sdk_default:
