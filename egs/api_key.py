@@ -28,7 +28,7 @@ def create_api_key(
         req["sliceName"] = slice_name
     print(f"🔍 request: {req}")
 
-    api_response = auth.invoke_sdk_operation('/api/v1/token/create', 'POST', req)
+    api_response = auth.invoke_sdk_operation('/api/v1/api-key/create', 'POST', req)
     # Debugging: Print raw response and Content-Type
     print(f"🔍 Raw response text: {api_response.text}")
     print(f"🔍 Response Content-Type: {api_response.headers.get('Content-Type')}")
@@ -66,7 +66,7 @@ def delete_api_key(
 ):
     auth = new_egs_core_apis_client(endpoint, access_token=access_token)
     req = {"apiKey": api_key}
-    api_response = auth.invoke_sdk_operation('/api/v1/token/delete', 'DELETE', req)
+    api_response = auth.invoke_sdk_operation('/api/v1/api-key/delete', 'DELETE', req)
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return api_response.data
@@ -77,7 +77,7 @@ def list_api_keys(
         access_token: str,
 ):
     auth = new_egs_core_apis_client(endpoint, access_token=access_token)
-    api_response = auth.invoke_sdk_operation('/api/v1/token/list', 'GET')
+    api_response = auth.invoke_sdk_operation('/api/v1/api-key/list', 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return api_response.data
