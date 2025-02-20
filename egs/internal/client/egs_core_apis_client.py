@@ -89,7 +89,11 @@ class EgsCoreApisClient(object):
             headers['Content-Type'] = 'application/json'
         conn.request(method, self.prefix + resource, payload, headers)
         res = conn.getresponse()
+        print(f'res:{res}')
+
         data = res.read().decode('utf-8')
+        print(f'data:{data}')
+
         response = json.loads(data)
         print(f'response:{response}')
 
