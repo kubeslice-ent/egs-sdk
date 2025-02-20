@@ -80,7 +80,7 @@ class EgsCoreApisClient(object):
         headers = {
             'Authorization': 'Bearer ' + access_token
         }
-
+        print(f'headers:{headers}')
         conn = http.client.HTTPConnection(self.server_host, self.server_port)
         if self.scheme == 'https':
             conn = http.client.HTTPSConnection(self.server_host, self.server_port)
@@ -91,6 +91,8 @@ class EgsCoreApisClient(object):
         res = conn.getresponse()
         data = res.read().decode('utf-8')
         response = json.loads(data)
+        print(f'response:{response}')
+
         if res.status == 401 or res.status == 403:
             raise Unauthorized(res)
         return ApiResponse(**response)
