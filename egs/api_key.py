@@ -26,6 +26,7 @@ def create_api_key(
         if not slice_name:
             raise ValueError("sliceName is required for roles Editor and Viewer")
         req["sliceName"] = slice_name
+    print(f"🔍 request: {req}")
 
     api_response = auth.invoke_sdk_operation('/api/v1/token/create', 'POST', req)
     # Debugging: Print raw response and Content-Type
