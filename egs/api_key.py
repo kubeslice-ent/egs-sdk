@@ -26,27 +26,8 @@ def create_api_key(
         if not slice_name:
             raise ValueError("sliceName is required for roles Editor and Viewer")
         req["sliceName"] = slice_name
-    print(f"🔍 request: {req}")
 
     api_response = auth.invoke_sdk_operation('/api/v1/api-key', 'POST', req)
-    # Debugging: Print raw response and Content-Type
-    print(f"🔍 Raw response text: {api_response.text}")
-    print(f"🔍 Response Content-Type: {api_response.headers.get('Content-Type')}")
-
-    # Handle response based on Content-Type
-    content_type = api_response.headers.get('Content-Type', '')
-    if 'application/json' in content_type:
-        try:
-            response_data = api_response.json()
-            print(f"✅ Parsed response JSON: {response_data}")
-            return response_data["apiKey"]
-        except ValueError as e:
-            print(f"❌ JSON Decode Error: {e}")
-            print("⚠️ Response might not be in JSON format.")
-            raise UnhandledException("Failed to parse JSON response.")
-    else:
-        print("⚠️ Response is not in JSON format.")
-        print(f"🔍 Raw response text: {api_response.text}")
     print(api_response)
     # if api_response.status_code == 409:
     #     raise APIKeyAlreadyExists(api_response)
