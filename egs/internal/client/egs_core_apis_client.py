@@ -81,6 +81,8 @@ class EgsCoreApisClient(object):
             'Authorization': 'Bearer ' + access_token
         }
         print(f'headers:{headers}')
+        print(f'URL:{self.prefix + resource}')
+
         conn = http.client.HTTPConnection(self.server_host, self.server_port)
         if self.scheme == 'https':
             conn = http.client.HTTPSConnection(self.server_host, self.server_port)
