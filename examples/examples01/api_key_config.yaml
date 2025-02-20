@@ -1,0 +1,20 @@
+api_keys:
+  # - name: "keya"
+  #   userName: "Admin"
+  #   description: "Key for accessing service A"
+  #   role: "Owner"
+  #   validUntil: "2025-12-31"
+
+  # - name: "keyb"
+  #   userName: "user123"
+  #   description: "Read-only access for tiger"
+  #   role: "Viewer"
+  #   validUntil: "2025-06-30"
+  #   sliceName: "tiger"
+
+  - name: "keyc"
+    userName: "editor_user"
+    description: "Editor access for tiger"
+    role: "Editor"
+    validUntil: "2026-01-15"
+    sliceName: "tiger"
