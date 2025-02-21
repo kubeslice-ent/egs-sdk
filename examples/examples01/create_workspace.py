@@ -126,15 +126,24 @@ if __name__ == "__main__":
                 response = egs.create_api_key(
                     name=cur_ws['name'],
                     role='Editor',
-                    valid_until=cur_ws['validUntil'],
+                    valid_until=cur_ws['apiKeyValidity'],
                     username=cur_ws['username'],
                     description=f"API Key for {cur_ws['name']}",
                     slice_name=cur_ws['name'],
                     authenticated_session=auth
                 )
 
-                print(f"✅ Successfully created API key: {cur_ws['name']} api-key {response}")
+                # Retrieve and save the token
+                try:
+                    apikey_path = os.path.join(workspace_dir, "apikey.txt")
+                    with open(apikey_path, "w", encoding="utf-8") as apikey_file:
+                        apikey_file.write(response)
+                    print(f"✅ Successfully Saved API key: {cur_ws['name']} api-key {response}")
 
+                except Exception as e:
+                    print(f"Failed to save token for {cur_ws['name']}")
+                    raise ValueError(f"Failed to save token for {cur_ws['name']}: {str(e)}")
+                
             except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
                 print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
             except Exception as e:

@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 username = api_key_data.get("userName", "admin")
                 description = api_key_data.get("description", "")
                 role = api_key_data.get("role")
-                valid_until = api_key_data.get("validUntil")
+                valid_until = api_key_data.get("apiKeyValidity")
                 slice_name = api_key_data.get("sliceName", None)
 
                 if not name or not role or not valid_until:
