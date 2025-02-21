@@ -54,11 +54,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
+        print(get_env_variable('EGS_ENDPOINT'))
+        print(get_env_variable('EGS_API_KEY'))
+
         # # Authenticate the EGS
         auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
                                 api_key=get_env_variable('EGS_API_KEY'),
                                 sdk_default=False)
-
+        print(auth)
         if not args.config:
             raise ValueError("Configuration file path must be provided using --config argument.")
 

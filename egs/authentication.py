@@ -32,8 +32,10 @@ def authenticate(
     else:
         print("🔑 Using API key for authentication.")
         auth = new_egs_core_apis_client(endpoint, api_key=api_key)
+        print(auth)
         # Exchange API key for access token
         _ = auth.exchange_api_key_for_access_token()
+        print(auth)
 
     auth_session = AuthenticatedSession(auth, sdk_default)
     if sdk_default:

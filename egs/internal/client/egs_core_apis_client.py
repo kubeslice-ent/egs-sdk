@@ -61,7 +61,11 @@ class EgsCoreApisClient(object):
         conn.request("POST", self.prefix + "/api/v1/auth", payload, headers)
         res = conn.getresponse()
         data = res.read().decode('utf-8')
+        print(data)
+
         response = json.loads(data)
+        print(response)
+
         if res.status == 400:
             raise ApiKeyInvalid(res.status)
         elif res.status == 401:
