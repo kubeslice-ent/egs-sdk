@@ -40,6 +40,7 @@ def get_kubeconfig_secret(workspace_name, project_name):
     except Exception as e:
         raise ValueError(f"Failed to retrieve token for {workspace_name}: {str(e)}")
 
+
 # Example usage
 if __name__ == "__main__":
     # Set up command-line arguments
@@ -55,7 +56,7 @@ if __name__ == "__main__":
     try:
         # # Authenticate the EGS
         auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
-                                get_env_variable('EGS_API_KEY'),
+                                api_key=get_env_variable('EGS_API_KEY'),
                                 sdk_default=False)
 
         if not args.config:
@@ -116,6 +117,24 @@ if __name__ == "__main__":
                 except Exception as e:
                     print(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster")
                     raise ValueError(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster")
+
+            try:
+                # Create API key
+                response = egs.create_api_key(
+                    name=cur_ws['name'],
+                    role='Editor',
+                    valid_until=cur_ws['validUntil'],
+                    username=cur_ws['username'],
+                    description=f"API Key for {cur_ws['name']}",
+                    slice_name=cur_ws['name']
+                )
+
+                print(f"✅ Successfully created API key: {cur_ws['name']} api-key {response}")
+
+            except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
+                print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
+            except Exception as e:
+                print(f"❌ Unexpected error for {cur_ws['name']}: {e}")
 
             # Retrieve and save the token
             try:

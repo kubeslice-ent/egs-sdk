@@ -1,20 +1,21 @@
 from typing import Optional
 
+import egs
+from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException
 from egs.internal.client.egs_core_apis_client import new_egs_core_apis_client
 
 
 def create_api_key(
-        endpoint: str,
-        access_token: str,
         name: str,
         role: str,
         valid_until: str,
         username: str = "admin",
         description: str = "",
-        slice_name: Optional[str] = None
+        slice_name: Optional[str] = None,
+        authenticated_session: Optional[AuthenticatedSession] = None
 ) -> str:
-    auth = new_egs_core_apis_client(endpoint, access_token=access_token)
+    auth = egs.get_authenticated_session(authenticated_session)
     req = {
         "name": name,
         "userName": username,

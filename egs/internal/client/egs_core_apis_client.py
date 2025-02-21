@@ -9,7 +9,9 @@ from egs.util.string_util import serialize
 
 
 class EgsCoreApisClient(object):
-    def __init__(self, server_url: str, api_key: Optional[str] = None, access_token: Optional[str] = None):
+    def __init__(self, server_url: str,
+                 api_key: Optional[str] = None,
+                 access_token: Optional[str] = None):
         self.api_key = api_key
         self.access_token = access_token
 
