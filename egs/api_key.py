@@ -28,7 +28,7 @@ def create_api_key(
             raise ValueError("sliceName is required for roles Editor and Viewer")
         req["sliceName"] = slice_name
 
-    api_response = auth.invoke_sdk_operation('/api/v1/api-key', 'POST', req)
+    api_response = auth.client.invoke_sdk_operation('/api/v1/api-key', 'POST', req)
     print(api_response)
     # if api_response.status_code == 409:
     #     raise APIKeyAlreadyExists(api_response)

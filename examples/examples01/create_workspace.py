@@ -128,7 +128,8 @@ if __name__ == "__main__":
                     valid_until=cur_ws['validUntil'],
                     username=cur_ws['username'],
                     description=f"API Key for {cur_ws['name']}",
-                    slice_name=cur_ws['name']
+                    slice_name=cur_ws['name'],
+                    authenticated_session=auth
                 )
 
                 print(f"✅ Successfully created API key: {cur_ws['name']} api-key {response}")
