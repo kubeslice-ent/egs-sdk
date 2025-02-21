@@ -1,12 +1,12 @@
 projectname: "avesha"
 workspaces:
-  - name: "workspace-a"
+  - name: "workspace-b"
     namespaces: 
-      - "namespace-a2"
-      - "namespace-a1"
+      - "namespace-b2"
+      - "namespace-b1"
     username: "admin-1"
     email: "admin1@acme.io"
     clusters:
       - "worker-1"
       # - "worker-2"
-    validUntil: "2025-12-31"
+    validUntil: "2025-12-31" # apiKeyValidity
