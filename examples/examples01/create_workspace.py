@@ -54,14 +54,24 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        # print(get_env_variable('EGS_ENDPOINT'))
-        # print(get_env_variable('EGS_API_KEY'))
+        # Check if either EGS_API_KEY or EGS_ACCESS_TOKEN is defined
+        api_key = os.getenv('EGS_API_KEY')
+        access_token = os.getenv('EGS_ACCESS_TOKEN')
 
-        # # Authenticate the EGS
-        auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
-                                # api_key=get_env_variable('EGS_API_KEY'),
-                                access_token=get_env_variable('EGS_ACCESS_TOKEN'),
-                                sdk_default=False)
+        # Authenticate the EGS
+        if api_key:
+            print("Using API Key for authentication.")
+            auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
+                                    api_key=api_key,
+                                    sdk_default=False)
+        elif access_token:
+            print("Using Access Token for authentication.")
+            auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
+                                    access_token=access_token,
+                                    sdk_default=False)
+        else:
+            raise ValueError("Either EGS_API_KEY or EGS_ACCESS_TOKEN must be set in the environment.")
+
         if not args.config:
             raise ValueError("Configuration file path must be provided using --config argument.")
 

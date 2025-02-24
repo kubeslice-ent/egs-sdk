@@ -1,10 +1,10 @@
 projectname: "avesha"
 workspaces:
-  - name: "workspace-b"
+  - name: "workspace-e"
     namespaces: 
-      - "namespace-b2"
-      - "namespace-b1"
-    username: "admin-1"
+      - "namespace-e2"
+      - "namespace-e1"
+    username: "workspace-e"
     email: "admin1@acme.io"
     clusters:
       - "worker-1"
