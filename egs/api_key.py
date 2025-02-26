@@ -18,7 +18,7 @@ def create_api_key(
 ) -> str:
     # Get authenticated session
     auth = egs.get_authenticated_session(authenticated_session)
-
+    
     # Prepare request payload
     req = {
         "name": name,
@@ -38,10 +38,9 @@ def create_api_key(
     # Make API request
     api_response = auth.client.invoke_sdk_operation('/api/v1/api-key', 'POST', req)
 
-    # Debug: Print full response for inspection
+    # Debug: Print response details
     print("Full Response:", api_response)
     print("Status Code:", api_response.status_code)
-    print("Headers:", api_response.headers)
     print("Raw Data:", api_response.data)
 
     # Check for success or handle errors
