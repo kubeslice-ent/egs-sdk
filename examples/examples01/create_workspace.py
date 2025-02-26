@@ -153,7 +153,7 @@ if __name__ == "__main__":
                 except Exception as e:
                     print(f"Failed to save token for {cur_ws['name']}")
                     raise ValueError(f"Failed to save token for {cur_ws['name']}: {str(e)}")
-                
+
             except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
                 print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
             except Exception as e:
