@@ -10,11 +10,11 @@ api_keys:
   #   description: "Read-only access for tiger"
   #   role: "Viewer"
   #   apiKeyValidity: "2025-06-30"
-  #   sliceName: "tiger"
+  #   workspaceName: "tiger"
 
   # - name: "keyc"
   #   userName: "editor_user"
   #   description: "Editor access for tiger"
   #   role: "Editor"
   #   apiKeyValidity: "2026-01-15"
-  #   sliceName: "tiger"
+  #   workspaceName: "tiger"

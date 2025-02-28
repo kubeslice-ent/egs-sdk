@@ -56,7 +56,7 @@ if __name__ == "__main__":
                 description = api_key_data.get("description", "")
                 role = api_key_data.get("role")
                 valid_until = api_key_data.get("apiKeyValidity")
-                slice_name = api_key_data.get("sliceName", None)
+                workspace_name = api_key_data.get("workspaceName", None)
 
                 if not name or not role or not valid_until:
                     raise ValueError(f"Missing required fields in API key config: {api_key_data}")
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                     valid_until=valid_until,
                     username=username,
                     description=description,
-                    slice_name=slice_name,
+                    workspace_name=workspace_name,
                     authenticated_session=auth
                 )
 
