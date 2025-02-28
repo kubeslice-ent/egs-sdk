@@ -45,6 +45,7 @@ def create_api_key(
         if not workspace_name:
             raise ValueError("workspaceName is required for roles Editor and Viewer")
         req["workspaceName"] = workspace_name
+    print("req:", req)
 
     # Make API request
     api_response = auth.client.invoke_sdk_operation(
