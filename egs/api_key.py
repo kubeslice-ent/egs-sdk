@@ -141,7 +141,7 @@ def list_api_keys(
     # Construct URL path
     path = '/api/v1/api-key/list'
     if workspace_name:
-        path = f"{path}?workspace={workspace_name}"
+        path = f"{path}?workspaceName={workspace_name}"
 
     # Make API request
     api_response = auth.client.invoke_sdk_operation(path, 'GET')
