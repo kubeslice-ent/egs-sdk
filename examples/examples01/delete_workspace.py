@@ -104,18 +104,6 @@ if __name__ == "__main__":
             )
             print(f"Workspace Deleted: {workspace_name}")
 
-            # # Retrieve and save the token
-            # try:
-            #     project_name = f'kubeslice-{workspace_config.get("projectname")}'
-            #     token = get_kubeconfig_secret(workspace_name, project_name)
-            #     token_path = os.path.join(workspace_dir, "token.txt")
-            #     with open(token_path, "w", encoding="utf-8") as token_file:
-            #         token_file.write(token)
-            #     print(f"Token for {workspace_name} saved at {token_path}")
-            # except Exception as e:
-            #     print(f"Failed to retrieve and save token for {workspace_name}")
-            #     raise ValueError(f"Failed to retrieve and save token for {workspace_name}: {str(e)}")
-
     except ApiKeyInvalid as e:
         # Do something when API key is not found
         print("API Key is Invalid")
