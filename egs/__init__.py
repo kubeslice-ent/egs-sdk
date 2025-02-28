@@ -11,6 +11,8 @@ from egs import api_key
 authenticate = authentication.authenticate
 
 create_api_key = api_key.create_api_key
+delete_api_key = api_key.delete_api_key
+list_api_keys = api_key.list_api_keys
 
 create_workspace = workspace.create_workspace
 delete_workspace = workspace.delete_workspace

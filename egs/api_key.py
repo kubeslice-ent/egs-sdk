@@ -45,7 +45,6 @@ def create_api_key(
         if not workspace_name:
             raise ValueError("workspaceName is required for roles Editor and Viewer")
         req["workspaceName"] = workspace_name
-    print("req:", req)
 
     # Make API request
     api_response = auth.client.invoke_sdk_operation(
@@ -54,19 +53,11 @@ def create_api_key(
         req
     )
 
-    # Debug: Print response details
-    print("Full Response:", api_response)
-    print("Status Code:", api_response.status_code)
-    print("Raw Data:", api_response.data)
-
     # Handle HTTP Status Codes
     if api_response.status_code == 200:
         try:
-            print("Parsed JSON Response:", api_response.data)
             return api_response.data["apiKey"]
         except (json.JSONDecodeError, KeyError) as err:
-            print("Parsing Error:", err)
-            print("Raw Response Data:", api_response.data)
             raise ValueError("Unexpected response format: 'apiKey' not found.")
     if api_response.status_code == 400:
         raise ValueError("Bad Request: The server could not understand the request.")

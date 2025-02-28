@@ -27,10 +27,8 @@ def authenticate(
 
     # Use access_token if provided, otherwise exchange api_key for token
     if access_token:
-        print("🔑 Using access token for authentication.")
         auth = new_egs_core_apis_client(endpoint, access_token=access_token)
     else:
-        print("🔑 Using API key for authentication.")
         auth = new_egs_core_apis_client(endpoint, api_key=api_key)
         # Exchange API key for access token
         _ = auth.exchange_api_key_for_access_token()

@@ -55,10 +55,10 @@ if __name__ == "__main__":
                 username = api_key_data.get("userName", "admin")
                 description = api_key_data.get("description", "")
                 role = api_key_data.get("role")
-                valid_until = api_key_data.get("apiKeyValidity")
+                validity = api_key_data.get("apiKeyValidity")
                 workspace_name = api_key_data.get("workspaceName", None)
 
-                if not name or not role or not valid_until:
+                if not name or not role or not validity:
                     raise ValueError(f"Missing required fields in API key config: {api_key_data}")
                 print(f"🔍 api_key_data: {json.dumps(api_key_data, indent=2)}")
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 response = egs.create_api_key(
                     name=name,
                     role=role,
-                    valid_until=valid_until,
+                    validity=validity,
                     username=username,
                     description=description,
                     workspace_name=workspace_name,
