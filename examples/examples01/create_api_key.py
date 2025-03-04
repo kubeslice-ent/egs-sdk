@@ -41,12 +41,6 @@ if __name__ == "__main__":
         endpoint = get_env_variable("EGS_ENDPOINT")
         access_token = get_env_variable("EGS_ACCESS_TOKEN")
 
-        # Authenticate the EGS
-        auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
-                                api_key=get_env_variable('EGS_API_KEY'),
-                                # access_token=get_env_variable('EGS_ACCESS_TOKEN'),
-                                sdk_default=False)
-
         # Loop through API key configs and create API keys
         for api_key_data in api_key_config["api_keys"]:
 
@@ -64,13 +58,14 @@ if __name__ == "__main__":
 
                 # Create API key
                 response = egs.create_api_key(
+                    endpoint=get_env_variable('EGS_ENDPOINT'),
+                    access_token=get_env_variable('EGS_ACCESS_TOKEN'),
                     name=name,
                     role=role,
                     validity=validity,
                     username=username,
                     description=description,
-                    workspace_name=workspace_name,
-                    authenticated_session=auth
+                    workspace_name=workspace_name
                 )
 
                 print(f"✅ Successfully created API key: {name} api-key {response}")
