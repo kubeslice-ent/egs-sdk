@@ -57,7 +57,7 @@ def create_api_key(
     if api_response.status_code == 200:
         try:
             return api_response.data["apiKey"]
-        except (json.JSONDecodeError, KeyError) as err:
+        except (json.JSONDecodeError, KeyError):
             raise ValueError("Unexpected response format: 'apiKey' not found.")
     if api_response.status_code == 400:
         raise ValueError("Bad Request: The server could not understand the request.")
