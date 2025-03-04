@@ -4,21 +4,25 @@ from typing import Optional
 import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException, Unauthorized
+from egs.internal.client.egs_core_apis_client import new_egs_core_apis_client
 
 
 def create_api_key(
+    endpoint: str,
+    access_token: str,
     name: str,
     role: str,
     validity: str,
     username: str = "admin",
     description: str = "",
-    workspace_name: Optional[str] = None,
-    authenticated_session: Optional[AuthenticatedSession] = None
+    workspace_name: Optional[str] = None
 ) -> str:
     """
     Create an API Key with the specified parameters.
 
     Args:
+        endpoint (str): The EGS endpoint URL.
+        access_token (str): Access token for authentication.
         name (str): Name of the API key.
         role (str): Role for the API key.
         validity (str): Validity period of the API key.
@@ -31,7 +35,7 @@ def create_api_key(
         str: The created API Key.
     """
     # Get authenticated session
-    auth = egs.get_authenticated_session(authenticated_session)
+    auth = new_egs_core_apis_client(endpoint, access_token=access_token)
 
     # Prepare request payload
     req = {
@@ -47,7 +51,7 @@ def create_api_key(
         req["workspaceName"] = workspace_name
 
     # Make API request
-    api_response = auth.client.invoke_sdk_operation(
+    api_response = auth.invoke_sdk_operation(
         '/api/v1/api-key',
         'POST',
         req
@@ -82,25 +86,27 @@ def create_api_key(
 
 
 def delete_api_key(
-    api_key: str,
-    authenticated_session: Optional[AuthenticatedSession] = None
+    endpoint: str,
+    access_token: str,
+    api_key: str
 ) -> str:
     """
     Delete an API Key by its value.
 
     Args:
+        endpoint (str): The EGS endpoint URL.
+        access_token (str): Access token for authentication.
         api_key (str): The API key to delete.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         str: Confirmation of deletion.
     """
     # Get authenticated session
-    auth = egs.get_authenticated_session(authenticated_session)
+    auth = new_egs_core_apis_client(endpoint, access_token=access_token)
     req = {"apiKey": api_key}
 
     # Make API request
-    api_response = auth.client.invoke_sdk_operation(
+    api_response = auth.invoke_sdk_operation(
         '/api/v1/api-key',
         'DELETE',
         req
@@ -122,21 +128,23 @@ def delete_api_key(
 
 
 def list_api_keys(
-    workspace_name: Optional[str] = None,
-    authenticated_session: Optional[AuthenticatedSession] = None
+    endpoint: str,
+    access_token: str,
+    workspace_name: Optional[str] = None
 ) -> dict:
     """
     List API Keys, optionally filtered by workspace.
 
     Args:
+        endpoint (str): The EGS endpoint URL.
+        access_token (str): Access token for authentication.
         workspace_name (Optional[str]): Workspace to filter the keys.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         dict: List of API keys.
     """
     # Get authenticated session
-    auth = egs.get_authenticated_session(authenticated_session)
+    auth = new_egs_core_apis_client(endpoint, access_token=access_token)
 
     # Construct URL path
     path = '/api/v1/api-key/list'
@@ -144,7 +152,7 @@ def list_api_keys(
         path = f"{path}?workspaceName={workspace_name}"
 
     # Make API request
-    api_response = auth.client.invoke_sdk_operation(path, 'GET')
+    api_response = auth.invoke_sdk_operation(path, 'GET')
 
     # Handle HTTP Status Codes
     if api_response.status_code == 200:
