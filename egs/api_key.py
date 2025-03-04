@@ -29,7 +29,6 @@ def create_api_key(
         username (str): Username associated with the key. Defaults to 'admin'.
         description (str): Description for the API key.
         workspace_name (Optional[str]): Workspace name if applicable.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         str: The created API Key.
