@@ -20,6 +20,10 @@ def request_gpu(
         gpu_shape: str,
         exit_duration: str,
         priority: int,
+        idle_timeout_duration: str,
+        enforce_idle_timeout: bool,
+        enable_eviction: bool,
+        requeue_on_failure: bool,
         authenticated_session: AuthenticatedSession = None
 ) -> str:
     auth = egs.get_authenticated_session(authenticated_session)
@@ -33,7 +37,11 @@ def request_gpu(
         instance_type=instance_type,
         gpu_shape=gpu_shape,
         exit_duration=exit_duration,
-        priority=priority
+        priority=priority,
+        idle_timeout_duration=idle_timeout_duration,
+        enforce_idle_timeout=enforce_idle_timeout,
+        enable_eviction=enable_eviction,
+        requeue_on_failure=requeue_on_failure
     )
     api_response = auth.client.invoke_sdk_operation('/api/v1/gpr', 'POST', req)
     if api_response.status_code != 200:
