@@ -1,5 +1,6 @@
 import http.client
 import json
+from typing import Optional
 
 from egs.exceptions import ApiKeyInvalid, ApiKeyExpired, ApiKeyNotFound, ServerUnreachable, Unauthorized
 from egs.internal.authentication.authentication_data import AuthenticationRequest, AuthenticationResponse
@@ -8,8 +9,15 @@ from egs.util.string_util import serialize
 
 
 class EgsCoreApisClient(object):
-    def __init__(self, server_url: str, api_key: str):
+    def __init__(self, server_url: str,
+                 api_key: Optional[str] = None,
+                 access_token: Optional[str] = None):
         self.api_key = api_key
+        self.access_token = access_token
+
+        if self.api_key is None and self.access_token is None:
+            raise ValueError("Either api_key or access_token must be provided.")
+
         """ Identify the HTTP Scheme """
         scheme_part = server_url.index('://')
         if scheme_part == -1:
@@ -40,7 +48,6 @@ class EgsCoreApisClient(object):
             else:
                 self.server_port = 443
 
-
     def exchange_api_key_for_access_token(self) -> AuthenticationResponse:
         """Performs the request authentication"""
         conn = http.client.HTTPConnection(self.server_host, self.server_port)
@@ -51,7 +58,7 @@ class EgsCoreApisClient(object):
         headers = {
             'Content-Type': 'application/json'
         }
-        conn.request("POST",self.prefix +  "/api/v1/auth", payload, headers)
+        conn.request("POST", self.prefix + "/api/v1/auth", payload, headers)
         res = conn.getresponse()
         data = res.read().decode('utf-8')
         response = json.loads(data)
@@ -68,9 +75,12 @@ class EgsCoreApisClient(object):
 
     def invoke_sdk_operation(self, resource: str, method: str, request: object = None) -> ApiResponse:
         payload = None
-        auth = self.exchange_api_key_for_access_token()
+        access_token = self.access_token
+        # Exchange API key for token if only api_key is provided
+        if self.api_key and not self.access_token:
+            access_token = self.exchange_api_key_for_access_token().token
         headers = {
-            'Authorization': 'Bearer ' + auth.token
+            'Authorization': 'Bearer ' + access_token
         }
         conn = http.client.HTTPConnection(self.server_host, self.server_port)
         if self.scheme == 'https':
@@ -86,10 +96,16 @@ class EgsCoreApisClient(object):
             raise Unauthorized(res)
         return ApiResponse(**response)
 
-
     def __str__(self):
         return serialize(self)
 
 
-def new_egs_core_apis_client(server_url: str, api_key: str) -> EgsCoreApisClient:
-    return EgsCoreApisClient(server_url, api_key)
+def new_egs_core_apis_client(server_url: str,
+                             api_key: Optional[str] = None,
+                             access_token: Optional[str] = None) -> EgsCoreApisClient:
+    if api_key is None and access_token is None:
+        raise ValueError("Either api_key or access_token must be provided.")
+
+    return EgsCoreApisClient(server_url,
+                             api_key=api_key,
+                             access_token=access_token)
