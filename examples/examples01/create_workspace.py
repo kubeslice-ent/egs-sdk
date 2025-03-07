@@ -3,7 +3,7 @@ import egs
 from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
 from egs.exceptions import ApiKeyInvalid, ApiKeyNotFound, WorkspaceAlreadyExists
 
-
+from datetime import datetime, timedelta, timezone
 from kubernetes import client, config
 import argparse
 import os
@@ -40,6 +40,7 @@ def get_kubeconfig_secret(workspace_name, project_name):
     except Exception as e:
         raise ValueError(f"Failed to retrieve token for {workspace_name}: {str(e)}")
 
+
 # Example usage
 if __name__ == "__main__":
     # Set up command-line arguments
@@ -53,10 +54,34 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        # # Authenticate the EGS
-        auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
-                                get_env_variable('EGS_API_KEY'),
-                                sdk_default=False)
+        # Check if either EGS_API_KEY or EGS_ACCESS_TOKEN is defined
+        api_key = os.getenv('EGS_API_KEY')
+        access_token = os.getenv('EGS_ACCESS_TOKEN')
+
+        # Authenticate the EGS
+        if api_key:
+            print("Using API Key for authentication.")
+            auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
+                                    api_key=api_key,
+                                    sdk_default=False)
+        elif access_token:
+            print("Using Access Token for authentication.")
+            tomorrow = datetime.now(timezone.utc) + timedelta(days=1)
+            # Create API Key for Owner
+            api_key = egs.create_api_key(
+                            endpoint=get_env_variable('EGS_ENDPOINT'),
+                            access_token=access_token,
+                            name="Owner_api_key",
+                            role="Owner",
+                            validity=tomorrow.strftime("%Y-%m-%d"),
+                            username="Owner",
+                            description="API key for Owner")
+
+            auth = egs.authenticate(get_env_variable('EGS_ENDPOINT'),
+                                    api_key=api_key,
+                                    sdk_default=False)
+        else:
+            raise ValueError("Either EGS_API_KEY or EGS_ACCESS_TOKEN must be set in the environment.")
 
         if not args.config:
             raise ValueError("Configuration file path must be provided using --config argument.")
@@ -113,7 +138,7 @@ if __name__ == "__main__":
                     with open(kubeconfig_path, "w", encoding="utf-8") as kube_file:
                         kube_file.write(kubeconfig)
                     print(f"KubeConfig for {workspace_name} in {cluster_name} saved at {kubeconfig_path}")
-                except Exception as e:
+                except Exception:
                     print(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster")
                     raise ValueError(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster")
 
@@ -129,6 +154,34 @@ if __name__ == "__main__":
                 print(f"Failed to retrieve and save token for {workspace_name}")
                 raise ValueError(f"Failed to retrieve and save token for {workspace_name}: {str(e)}")
 
+            try:
+                # Create API key
+                response = egs.create_api_key(
+                    endpoint=get_env_variable('EGS_ENDPOINT'),
+                    access_token=token,
+                    name=cur_ws['name'],
+                    role='Editor',
+                    validity=cur_ws['apiKeyValidity'],
+                    username=cur_ws['username'],
+                    description=f"API Key for {cur_ws['name']}",
+                    workspace_name=cur_ws['name']
+                )
+
+                # Retrieve and save the token
+                try:
+                    apikey_path = os.path.join(workspace_dir, "apikey.txt")
+                    with open(apikey_path, "w", encoding="utf-8") as apikey_file:
+                        apikey_file.write(response)
+                    print(f"✅ Successfully Saved API key: {cur_ws['name']} api-key {response}")
+
+                except Exception as e:
+                    print(f"Failed to save token for {cur_ws['name']}")
+                    raise ValueError(f"Failed to save token for {cur_ws['name']}: {str(e)}")
+
+            except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
+                print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
+            except Exception as e:
+                print(f"❌ Unexpected error for {cur_ws['name']}: {e}")
     except ApiKeyInvalid as e:
         # Do something when API key is not found
         print("API Key is Invalid")
