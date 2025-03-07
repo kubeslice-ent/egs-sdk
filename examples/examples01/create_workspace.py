@@ -132,33 +132,33 @@ if __name__ == "__main__":
                     print(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster {str(e)}")
                     raise ValueError(f"Failed to save KubeConfig for {workspace_name} workspace {cluster_name} cluster")
 
-            # try:
-            #     # Create API key
-            #     response = egs.create_api_key(
-            #         name=cur_ws['name'],
-            #         role='Editor',
-            #         validity=cur_ws['apiKeyValidity'],
-            #         username=cur_ws['username'],
-            #         description=f"API Key for {cur_ws['name']}",
-            #         workspace_name=cur_ws['name'],
-            #         authenticated_session=auth
-            #     )
+            try:
+                # Create API key
+                response = egs.create_api_key(
+                    name=cur_ws['name'],
+                    role='Editor',
+                    validity=cur_ws['apiKeyValidity'],
+                    username=cur_ws['username'],
+                    description=f"API Key for {cur_ws['name']}",
+                    workspace_name=cur_ws['name'],
+                    authenticated_session=auth
+                )
 
-            #     # Retrieve and save the token
-            #     try:
-            #         apikey_path = os.path.join(workspace_dir, "apikey.txt")
-            #         with open(apikey_path, "w", encoding="utf-8") as apikey_file:
-            #             apikey_file.write(response)
-            #         print(f"✅ Successfully Saved API key: {cur_ws['name']} api-key {response}")
+                # Retrieve and save the token
+                try:
+                    apikey_path = os.path.join(workspace_dir, "apikey.txt")
+                    with open(apikey_path, "w", encoding="utf-8") as apikey_file:
+                        apikey_file.write(response)
+                    print(f"✅ Successfully Saved API key: {cur_ws['name']} api-key {response}")
 
-            #     except Exception as e:
-            #         print(f"Failed to save token for {cur_ws['name']}")
-            #         raise ValueError(f"Failed to save token for {cur_ws['name']}: {str(e)}")
+                except Exception as e:
+                    print(f"Failed to save token for {cur_ws['name']}")
+                    raise ValueError(f"Failed to save token for {cur_ws['name']}: {str(e)}")
 
-            # except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
-            #     print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
-            # except Exception as e:
-            #     print(f"❌ Unexpected error for {cur_ws['name']}: {e}")
+            except (ApiKeyInvalid, ApiKeyNotFound, ValueError) as e:
+                print(f"⚠️ Error creating API key {cur_ws['name']}: {e}")
+            except Exception as e:
+                print(f"❌ Unexpected error for {cur_ws['name']}: {e}")
 
             # Retrieve and save the token
             try:
