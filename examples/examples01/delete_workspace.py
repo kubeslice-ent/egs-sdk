@@ -80,7 +80,6 @@ def create_owner_api_key():
         "role": "Owner",
         "validity": validity,
     }
-    print(req_body)
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {egs_token}",
