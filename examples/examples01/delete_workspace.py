@@ -147,7 +147,6 @@ if __name__ == "__main__":
         if not workspace_config or "workspaces" not in workspace_config:
             raise ValueError("Workspace configuration file is empty or invalid.")
 
-
         for cur_ws in workspace_config.get('workspaces', []):
 
             try:
