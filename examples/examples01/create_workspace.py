@@ -1,6 +1,4 @@
-
 import egs
-from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
 from egs.exceptions import ApiKeyInvalid, ApiKeyNotFound, WorkspaceAlreadyExists
 
 

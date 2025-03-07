@@ -1,6 +1,5 @@
 from egs.exceptions import Unauthorized
 
-global _authenticated_session
 from egs import authentication
 from egs import inventory_operations
 from egs import workspace
