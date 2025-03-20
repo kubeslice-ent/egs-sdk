@@ -81,54 +81,62 @@ def main():
         WORKSPACE_NAME = config["WORKSPACE_NAME"]
         CLUSTER_NAME = config["CLUSTER_NAME"]
 
-        # Read user api key from user folder
-        with open(f"./{team}/api-token.txt", "r") as file:
-            USER_API_KEY = file.read().strip()
+        # # Read user api key from user folder
+        # with open(f"./{team}/api-token.txt", "r") as file:
+        #     USER_API_KEY = file.read().strip()
 
-        # Placeholder for any further processing per team
-        print(f"Completed processing API-Token for team: {team}\n{'='*50}")
+        # # Placeholder for any further processing per team
+        # print(f"Completed processing API-Token for team: {team}\n{'='*50}")
 
-        user_auth = authenticate(ENDPOINT=ENDPOINT, API_KEY=USER_API_KEY)
+        # user_auth = authenticate(ENDPOINT=ENDPOINT, API_KEY=USER_API_KEY)
 
-        # Define slices and their GPU shapes
-        slices = {
-            "low priority": 1,
-            "important fine tuning": 101,
-            "EMERGENCY": 201
-        }
+        # # Define slices and their GPU shapes
+        # slices = {
+        #     "low priority": 1,
+        #     "important fine tuning": 101,
+        #     "EMERGENCY": 201
+        # }
 
-        print("Installing GPU workloads...")
+        # print("Installing GPU workloads...")
 
-        subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./llm-deployment.yaml"], check=True)
+        # subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./llm-deployment.yaml"], check=True)
 
-        subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./service.yaml"], check=True)
+        # subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./service.yaml"], check=True)
 
-        # # sleep for 60 seconds
+        # # # sleep for 60 seconds
+        # # print("Waiting for 60 seconds ...")
+        # # time.sleep(60)
+
+        # print("Creating GPR requests...")
+        # # Create GPR requests for each slice
+        # create_gpr_requests(user_auth, WORKSPACE_NAME, slices, CLUSTER_NAME)
+        
+        # print("GPU workload automation script completed successfully.")
+        # # delete_gpr_requests(user_auth, WORKSPACE_NAME)
+
+        # # Add sleep for 60 seconds to allow the service to be ready
         # print("Waiting for 60 seconds ...")
         # time.sleep(60)
 
-        # # Create load against the service
-        # print("Creating load against the service...")
-        # external_ip = print(subprocess.run(["kubectl", "get", "svc", "llm-service", "-o", "jsonpath={.status.loadBalancer.ingress[0].hostname}"], capture_output=True, text=True, check=True).stdout.strip())
+        # Create load against the service
+        print("Creating load against the service...")
+        command = ["kubectl", "get", "svc", "llm-service", "-o", "jsonpath=\"{.status.loadBalancer.ingress[0].ip}\"", "-n", team]
+        print("Running command:", " ".join(command))
 
-        # url = f"http://{external_ip}/generate"
-        # headers = {"Content-Type": "application/json"}
-        # data = {"input": "What is Kubernetes?"}
+        external_ip = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip().replace('"', '')
+        url = f"http://{external_ip}/generate"
+        print("url:", url)
+        headers = {"Content-Type": "application/json"}
+        data = {"input": "What is Kubernetes?"}
 
-        # for _ in range(3600):
-        #     try:
-        #         response = requests.post(url, json=data, headers=headers)
-        #         print(f"Response: {response.status_code}, {response.text}")
-        #     except requests.RequestException as e:
-        #         print(f"Error: {e}")
-        #     time.sleep(1)
+        for _ in range(3600):
+            try:
+                response = requests.post(url, json=data, headers=headers)
+                print(f"Response: {response.status_code}, {response.text}")
+            except requests.RequestException as e:
+                print(f"Error: {e}")
+            time.sleep(1)
 
-        print("Creating GPR requests...")
-        # Create GPR requests for each slice
-        create_gpr_requests(user_auth, WORKSPACE_NAME, slices, CLUSTER_NAME)
-        
-        print("GPU workload automation script completed successfully.")
-        # delete_gpr_requests(user_auth, WORKSPACE_NAME)
 
 if __name__ == "__main__":
     main()
