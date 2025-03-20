@@ -1,9 +1,13 @@
 # 🚀 EGS Workspace Automation Guide
 
 🔹 Managing teams in EGS just got easier! This script automates the process of:
+
 ✅ Creating workspaces for different teams 🏢
+
 ✅ Generating team-specific credentials 🔑
+
 ✅ Setting up GPRs (Global Policy Rules) for users 👥
+
 ✅ Deleting workspaces when they're no longer needed 🗑️
 
 🔹 With just a few commands, you can streamline access control and policy management in your EGS-powered Kubernetes cluster! 🎯
@@ -11,9 +15,13 @@
 ## 📌 Pre-Requisites
 
 🔹 Before you jump in, make sure you have the following:
+
 ✔️ EGS installed on a Kubernetes cluster (Follow the EGS Installation Guide)
+
 ✔️ pip install requests (Make sure this Python package is installed)
+
 ✔️ 💻 Access to a Linux terminal connected to the internet
+
 ✔️ 📦 kubectl installed and configured
 
 ## 🚀 Running the Script
