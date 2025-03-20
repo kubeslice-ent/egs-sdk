@@ -6,11 +6,9 @@
 
 ✅ Generating team-specific credentials 🔑
 
-✅ Setting up GPRs (Global Policy Rules) for users 👥
+✅ Setting up GPRs (GPU Requests) for users 👥
 
 ✅ Deleting workspaces when they're no longer needed 🗑️
-
-🔹 With just a few commands, you can streamline access control and policy management in your EGS-powered Kubernetes cluster! 🎯
 
 ## 📌 Pre-Requisites
 
@@ -55,8 +53,11 @@ python runner.py --teams team-beta team-gamma --kubeconfig /path/to/<admin>-kube
 ```
 
 🔹 This will generate directories for each team (team-beta, team-gamma) with:
+
 📜 api-token.txt – Placeholder for the EGS API token
+
 📜 team-<team-name>-kubeconfig.yaml – Kubernetes config for the team
+
 📜 team-<team-name>-token.txt – Temporary login token for EGS UI
 
 🔹 Next Step: Log in to the EGS UI with the token from team-<team-name>-token.txt and generate an API token.
