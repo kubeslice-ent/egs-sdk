@@ -56,11 +56,12 @@ python runner.py --teams team-beta team-gamma --kubeconfig /path/to/<admin>-kube
 
 📜 api-token.txt – Placeholder for the EGS API token
 
-📜 team-<team-name>-kubeconfig.yaml – Kubernetes config for the team
+📜 team-\<team-name\>-kubeconfig.yaml – Kubernetes config for the team
 
-📜 team-<team-name>-token.txt – Temporary login token for EGS UI
+📜 team-\<team-name\>-token.txt – Temporary login token for EGS UI
 
 🔹 Next Step: Log in to the EGS UI with the token from team-<team-name>-token.txt and generate an API token.
+
 🔹 Save that API token in api-token.txt inside the respective team’s directory.
 
 ## 3️⃣ Create GPRs for the Team
