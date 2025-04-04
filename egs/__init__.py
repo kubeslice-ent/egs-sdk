@@ -7,6 +7,7 @@ from egs import workspace
 from egs import gpu_requests
 from egs import inference_endpoint
 from egs import api_key
+from egs import gpr_template
 
 authenticate = authentication.authenticate
 
@@ -35,6 +36,12 @@ create_inference_endpoint = inference_endpoint.create_inference_endpoint
 create_inference_endpoint_with_custom_model_spec = inference_endpoint.create_inference_endpoint_with_custom_model_spec
 describe_inference_endpoint = inference_endpoint.describe_inference_endpoint
 delete_inference_endpoint = inference_endpoint.delete_inference_endpoint
+
+create_gpr_template = gpr_template.create_gpr_template
+get_gpr_template = gpr_template.get_gpr_template
+list_gpr_templates = gpr_template.list_gpr_templates
+update_gpr_template = gpr_template.update_gpr_template
+delete_gpr_template = gpr_template.delete_gpr_template
 
 
 def update_global_session(session):
