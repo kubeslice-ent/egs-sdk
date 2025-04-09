@@ -1,8 +1,8 @@
 projectname: "avesha"
 workspaces:
-  - name: "workspace-2i"
+  - name: "workspace-2j"
     namespaces: 
-      - "namespace-2i2"
+      - "namespace-2j2"
       - "namespace-2i1"
     username: "admin-1"
     email: "admin1@acme.io"
