@@ -52,10 +52,10 @@ def create_gpr_template(
         instance_type=instance_type,
         exit_duration=exit_duration,
         priority=priority,
-        idle_timeout_duration=idle_timeout_duration,
-        enforce_idle_timeout=enforce_idle_timeout,
         enable_eviction=enable_eviction,
-        requeue_on_failure=requeue_on_failure
+        requeue_on_failure=requeue_on_failure,
+        enforce_idle_timeout=enforce_idle_timeout,
+        idle_timeout_duration=idle_timeout_duration
     )
 
     api_response = auth.client.invoke_sdk_operation(
@@ -108,7 +108,7 @@ def list_gpr_templates(
 
     api_response = auth.client.invoke_sdk_operation(
         '/api/v1/gpr-template/list',
-        'GET',  # Ensure this matches API method
+        'GET',
         request_payload
     )
 
