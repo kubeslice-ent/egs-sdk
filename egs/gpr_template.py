@@ -1,3 +1,4 @@
+from typing import Optional
 import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException
@@ -27,16 +28,19 @@ def create_gpr_template(
     instance_type: str,
     exit_duration: str,
     priority: int,
-    idle_timeout_duration: str,
     enforce_idle_timeout: bool,
     enable_eviction: bool,
     requeue_on_failure: bool,
-    authenticated_session: AuthenticatedSession = None
-) -> str:
+    idle_timeout_duration: Optional[str] = None,
+    authenticated_session: Optional[AuthenticatedSession] = None
+   ) -> str:
     """
     Creates a GPR template using the provided parameters and returns the
     template name.
     """
+    if enforce_idle_timeout and not idle_timeout_duration:
+        raise ValueError("idle_timeout_duration is required when enforce_idle_timeout is True")
+
     auth = egs.get_authenticated_session(authenticated_session)
     request_payload = CreateGprTemplateRequest(
         name=name,
@@ -68,7 +72,7 @@ def create_gpr_template(
 
 def get_gpr_template(
     gpr_template_name: str,
-    authenticated_session: AuthenticatedSession = None
+    authenticated_session: Optional[AuthenticatedSession] = None
 ) -> GetGprTemplateResponse:
     """
     Retrieves a GPR template by its name.
@@ -94,7 +98,7 @@ def get_gpr_template(
 
 
 def list_gpr_templates(
-    authenticated_session: AuthenticatedSession = None
+    authenticated_session: Optional[AuthenticatedSession] = None
 ) -> ListGprTemplatesResponse:
     """
     Retrieves a list of all GPR templates.
@@ -133,7 +137,7 @@ def update_gpr_template(
     requeue_on_failure: bool,
     idle_timeout_duration: str,
     enforce_idle_timeout: bool,
-    authenticated_session: AuthenticatedSession = None,
+    authenticated_session: Optional[AuthenticatedSession] = None
 ) -> UpdateGprTemplateResponse:
     """
     Update an existing GPR Template.
@@ -169,7 +173,7 @@ def update_gpr_template(
 
 def delete_gpr_template(
     gpr_template_name: str,
-    authenticated_session: AuthenticatedSession = None,
+    authenticated_session: Optional[AuthenticatedSession] = None
 ) -> DeleteGprTemplateResponse:
     """
     Delete a GPR Template by name.
@@ -186,32 +190,3 @@ def delete_gpr_template(
         raise UnhandledException(api_response)
 
     return DeleteGprTemplateResponse()
-
-
-# def update_gpr_template_binding(
-#     workspace_name: str,
-#     clusters: list,
-#     enable_auto_gpr: bool,
-#     authenticated_session: AuthenticatedSession = None
-# ) -> UpdateGprTemplateBindingResponse:
-#     """
-#     Updates a GPR template binding.
-#     """
-#     auth = egs.get_authenticated_session(authenticated_session)
-
-#     request_obj = UpdateGprTemplateBindingRequest(
-#         workspace_name=workspace_name,
-#         clusters=clusters,
-#         enable_auto_gpr=enable_auto_gpr
-#     )
-
-#     api_response = auth.client.invoke_sdk_operation(
-#         "/api/v1/gpr-template-binding/update",
-#         "PUT",
-#         request_obj
-#     )
-
-#     if api_response.status_code != 200:
-#         raise UnhandledException(api_response)
-
-#     return UpdateGprTemplateBindingResponse(**api_response.data)
