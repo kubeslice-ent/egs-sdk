@@ -1,3 +1,5 @@
+from typing import Optional
+
 from egs.util.string_util import serialize
 
 
@@ -16,8 +18,8 @@ class UpdateGprTemplateRequest:
         gpu_shape: str,
         enable_eviction: bool,
         requeue_on_failure: bool,
-        idle_timeout_duration: str,
         enforce_idle_timeout: bool,
+        idle_timeout_duration: Optional[str] = None,
     ):
         self.name = name
         self.clusterName = cluster_name
@@ -31,8 +33,10 @@ class UpdateGprTemplateRequest:
         self.gpuShape = gpu_shape
         self.enableEviction = enable_eviction
         self.requeueOnFailure = requeue_on_failure
-        self.idleTimeOutDuration = idle_timeout_duration
         self.enforceIdleTimeOut = enforce_idle_timeout
+
+        if enforce_idle_timeout:
+            self.idleTimeOutDuration = idle_timeout_duration
 
     def __str__(self):
         return serialize(self)

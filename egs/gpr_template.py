@@ -83,9 +83,6 @@ def get_gpr_template(
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
-    # request_payload = GetGprTemplateRequest(
-    #                         gpr_template_name=gpr_template_name)
-
     api_response = auth.client.invoke_sdk_operation(
         '/api/v1/gpr-template?gprTemplateName=' + gpr_template_name,
         'GET')
