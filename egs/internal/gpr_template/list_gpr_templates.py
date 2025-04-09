@@ -1,3 +1,4 @@
+from typing import List
 from egs.util.string_util import serialize
 from .get_gpr_template import GetGprTemplateResponse  # Reusing the existing model
 
