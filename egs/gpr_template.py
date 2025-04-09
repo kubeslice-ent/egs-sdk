@@ -5,7 +5,7 @@ from egs.exceptions import UnhandledException
 from egs.internal.gpr_template.create_gpr_template import (
     CreateGprTemplateRequest, CreateGprTemplateResponse)
 from egs.internal.gpr_template.get_gpr_template import (
-    GetGprTemplateRequest, GetGprTemplateResponse)
+     GetGprTemplateResponse)
 from egs.internal.gpr_template.list_gpr_templates import (
     ListGprTemplatesRequest, ListGprTemplatesResponse)
 from egs.internal.gpr_template.update_gpr_template import (
