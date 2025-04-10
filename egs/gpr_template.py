@@ -147,7 +147,7 @@ def update_gpr_template(
         exit_duration=exit_duration,
         number_of_gpu_nodes=number_of_gpu_nodes,
         priority=priority,
-        gpu_sharing_mode=gpu_sharing_mode,
+        # gpu_sharing_mode=gpu_sharing_mode,
         memory_per_gpu=memory_per_gpu,
         gpu_shape=gpu_shape,
         enable_eviction=enable_eviction,

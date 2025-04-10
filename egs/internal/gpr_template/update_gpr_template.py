@@ -13,7 +13,7 @@ class UpdateGprTemplateRequest:
         exit_duration: str,
         number_of_gpu_nodes: int,
         priority: int,
-        gpu_sharing_mode: str,
+        # gpu_sharing_mode: str,
         memory_per_gpu: int,
         gpu_shape: str,
         enable_eviction: bool,
@@ -28,7 +28,7 @@ class UpdateGprTemplateRequest:
         self.exitDuration = exit_duration
         self.numberOfGPUNodes = number_of_gpu_nodes
         self.priority = priority
-        self.gpuSharingMode = gpu_sharing_mode
+        # self.gpuSharingMode = gpu_sharing_mode
         self.memoryPerGpu = memory_per_gpu
         self.gpuShape = gpu_shape
         self.enableEviction = enable_eviction
