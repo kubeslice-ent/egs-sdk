@@ -9,7 +9,6 @@ class GetGprTemplateResponse:
     def __init__(
         self,
         name: str,
-        namespace: str,
         clusterName: str,
         numberOfGPUs: int,
         numberOfGPUNodes: int,
@@ -26,7 +25,6 @@ class GetGprTemplateResponse:
         **kwargs,  # To handle extra fields gracefully
     ):
         self.name = name
-        self.namespace = namespace
         self.cluster_name = clusterName
         self.number_of_gpus = numberOfGPUs
         self.number_of_gpu_nodes = numberOfGPUNodes
