@@ -130,8 +130,8 @@ def update_gpr_template(
     gpu_shape: str,
     enable_eviction: bool,
     requeue_on_failure: bool,
-    idle_timeout_duration: str,
     enforce_idle_timeout: bool,
+    idle_timeout_duration: Optional[str] = None,
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> UpdateGprTemplateResponse:
     """
