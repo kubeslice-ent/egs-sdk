@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Optional, List, Dict
 
 import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException
 
 from egs.internal.gpr_template_binding.create_gpr_template_binding import (
+    GprTemplateBindingCluster,
     CreateGprTemplateBindingRequest,
     CreateGprTemplateBindingResponse,
 )
@@ -24,25 +25,43 @@ from egs.internal.gpr_template_binding.update_gpr_template_binding import (
     UpdateGprTemplateBindingResponse,
 )
 
+
 def create_gpr_template_binding(
-    request: CreateGprTemplateBindingRequest,
+    workspace_name: str,
+    clusters: List[Dict],
+    enable_auto_gpr: bool,
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> CreateGprTemplateBindingResponse:
     """
-    Create a GPR template binding.
+    Creates a GPR template binding.
 
     Args:
-        request (CreateGprTemplateBindingRequest): The request object.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
+        workspace_name (str): Workspace name (slice name).
+        clusters (List[Dict]): List of cluster dicts.
+        enable_auto_gpr (bool): Enable auto GPR flag.
+        authenticated_session (Optional[AuthenticatedSession]): Session.
 
     Returns:
         CreateGprTemplateBindingResponse
     """
     auth = egs.get_authenticated_session(authenticated_session)
+
+    cluster_objs = [
+        GprTemplateBindingCluster(
+            cluster_name=cluster.get("clusterName"),
+            default_template_name=cluster.get("defaultTemplateName"),
+            templates=cluster.get("templates", [])
+        ) for cluster in clusters
+    ]
+
+    request_payload = CreateGprTemplateBindingRequest(
+        workspace_name=workspace_name,
+        clusters=cluster_objs,
+        enable_auto_gpr=enable_auto_gpr
+    )
+
     response = auth.client.invoke_sdk_operation(
-        "/api/v1/gpr-template-binding",
-        "POST",
-        request
+        "/api/v1/gpr-template-binding", "POST", request_payload
     )
 
     if response.status_code != 200:
@@ -51,52 +70,25 @@ def create_gpr_template_binding(
     return CreateGprTemplateBindingResponse(**response.data)
 
 
-def delete_gpr_template_binding(
-    gpr_template_binding_name: str,
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> DeleteGprTemplateBindingResponse:
-    """
-    Delete a GPR template binding.
-
-    Args:
-        gpr_template_binding_name (str): Name of the binding to delete.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
-
-    Returns:
-        DeleteGprTemplateBindingResponse
-    """
-    auth = egs.get_authenticated_session(authenticated_session)
-    req = DeleteGprTemplateBindingRequest(gpr_template_binding_name)
-
-    response = auth.client.invoke_sdk_operation(
-        "/api/v1/gpr-template-binding",
-        "DELETE",
-        req
-    )
-
-    if response.status_code != 200:
-        raise UnhandledException(response)
-
-    return DeleteGprTemplateBindingResponse()
-
-
 def get_gpr_template_binding(
-    gpr_template_binding_name: str,
+    binding_name: str,
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> GetGprTemplateBindingResponse:
     """
-    Retrieve a GPR template binding by name.
+    Gets a GPR template binding by name.
 
     Args:
-        gpr_template_binding_name (str): Name of the binding.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
+        binding_name (str): GPR template binding name.
+        authenticated_session (Optional[AuthenticatedSession]): Session.
 
     Returns:
         GetGprTemplateBindingResponse
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
-    endpoint = f"/api/v1/gpr-template-binding?gprTemplateBindingName={gpr_template_binding_name}"
+    endpoint = (
+        f"/api/v1/gpr-template-binding?gprTemplateBindingName={binding_name}"
+    )
     response = auth.client.invoke_sdk_operation(endpoint, "GET")
 
     if response.status_code != 200:
@@ -109,22 +101,20 @@ def list_gpr_template_bindings(
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> ListGprTemplateBindingsResponse:
     """
-    List all GPR template bindings.
+    Lists all GPR template bindings.
 
     Args:
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
+        authenticated_session (Optional[AuthenticatedSession]): Session.
 
     Returns:
         ListGprTemplateBindingsResponse
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
-    request = ListGprTemplateBindingsRequest()
-
     response = auth.client.invoke_sdk_operation(
         "/api/v1/gpr-template-binding/list",
         "GET",
-        request
+        ListGprTemplateBindingsRequest()
     )
 
     if response.status_code != 200:
@@ -136,31 +126,74 @@ def list_gpr_template_bindings(
 
 
 def update_gpr_template_binding(
-    request: UpdateGprTemplateBindingRequest,
+    workspace_name: str,
+    clusters: List[Dict],
+    enable_auto_gpr: bool,
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> UpdateGprTemplateBindingResponse:
     """
-    Update an existing GPR template binding.
+    Updates a GPR template binding.
 
     Args:
-        request (UpdateGprTemplateBindingRequest): The update payload.
-        authenticated_session (Optional[AuthenticatedSession]): Auth session.
+        workspace_name (str): The workspace/slice name.
+        clusters (List[Dict]): List of cluster dicts.
+        enable_auto_gpr (bool): Enable auto GPR flag.
+        authenticated_session (Optional[AuthenticatedSession]): Session.
 
     Returns:
         UpdateGprTemplateBindingResponse
-
-    Raises:
-        UnhandledException: If API call fails.
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
+    cluster_objs = [
+        GprTemplateBindingCluster(
+            cluster_name=cluster.get("clusterName"),
+            default_template_name=cluster.get("defaultTemplateName"),
+            templates=cluster.get("templates", [])
+        ) for cluster in clusters
+    ]
+
+    request_payload = UpdateGprTemplateBindingRequest(
+        workspace_name=workspace_name,
+        clusters=cluster_objs,
+        enable_auto_gpr=enable_auto_gpr
+    )
+
     response = auth.client.invoke_sdk_operation(
-        "/api/v1/gpr-template-binding",
-        "PUT",
-        request
+        "/api/v1/gpr-template-binding", "PUT", request_payload
     )
 
     if response.status_code != 200:
         raise UnhandledException(response)
 
-    return UpdateGprTemplateBindingResponse()
+    return UpdateGprTemplateBindingResponse(**response.data)
+
+
+def delete_gpr_template_binding(
+    binding_name: str,
+    authenticated_session: Optional[AuthenticatedSession] = None
+) -> DeleteGprTemplateBindingResponse:
+    """
+    Deletes a GPR template binding by name.
+
+    Args:
+        binding_name (str): Name of the binding to delete.
+        authenticated_session (Optional[AuthenticatedSession]): Session.
+
+    Returns:
+        DeleteGprTemplateBindingResponse
+    """
+    auth = egs.get_authenticated_session(authenticated_session)
+
+    request_payload = DeleteGprTemplateBindingRequest(
+        gpr_template_binding_name=binding_name
+    )
+
+    response = auth.client.invoke_sdk_operation(
+        "/api/v1/gpr-template-binding", "DELETE", request_payload
+    )
+
+    if response.status_code != 200:
+        raise UnhandledException(response)
+
+    return DeleteGprTemplateBindingResponse()
