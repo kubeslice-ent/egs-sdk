@@ -8,6 +8,7 @@ from egs import gpu_requests
 from egs import inference_endpoint
 from egs import api_key
 from egs import gpr_template
+from egs import gpr_template_binding
 
 authenticate = authentication.authenticate
 
@@ -43,6 +44,11 @@ list_gpr_templates = gpr_template.list_gpr_templates
 update_gpr_template = gpr_template.update_gpr_template
 delete_gpr_template = gpr_template.delete_gpr_template
 
+create_gpr_template_binding = gpr_template_binding.create_gpr_template_binding
+get_gpr_template_binding = gpr_template_binding.get_gpr_template_binding
+list_gpr_template_bindings = gpr_template_binding.list_gpr_template_bindings
+update_gpr_template_binding = gpr_template_binding.update_gpr_template_binding
+delete_gpr_template_binding = gpr_template_binding.delete_gpr_template_binding
 
 def update_global_session(session):
     global _authenticated_session
