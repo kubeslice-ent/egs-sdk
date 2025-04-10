@@ -1,9 +1,9 @@
 projectname: "avesha"
 workspaces:
-  - name: "workspace-2x"
+  - name: "workspace-2y"
     namespaces: 
-      - "namespace-2x2"
-      - "namespace-2x1"
+      - "namespace-2y2"
+      - "namespace-2y1"
     username: "admin-1"
     email: "admin1@acme.io"
     clusters:

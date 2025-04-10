@@ -39,10 +39,12 @@ class UpdateGprTemplateBindingResponse:
     def __init__(
         self,
         name: str,
+        namespace: str,
         clusters: List[dict],
         enableAutoGPR: bool
     ):
         self.name = name
+        self.namespace = namespace
         self.clusters = [GprTemplateBindingClusterStatus(**c) for c in clusters]
         self.enable_auto_gpr = enableAutoGPR
 
