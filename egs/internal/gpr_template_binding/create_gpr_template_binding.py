@@ -1,6 +1,6 @@
 from typing import List
-from typing import List, 
 from egs.util.string_util import serialize
+
 
 class GprTemplateBindingCluster:
     """
