@@ -131,15 +131,3 @@ response = delete_gpr_template_binding("binding-name")
 **Returns**: `DeleteGprTemplateBindingResponse`
 
 ---
-
-## 🔗 Reference from Main README
-
-To reference this doc, add this line to your `README.md`:
-
-```markdown
-## GPR Template Bindings API 📦
-
-For full usage instructions, visit the [GPR Template Bindings Documentation](docs/gpr_template_binding.md).
-```
-
----

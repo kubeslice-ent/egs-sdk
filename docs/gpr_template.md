@@ -162,15 +162,3 @@ delete_gpr_template("my-template")
 **Returns**: `DeleteGprTemplateResponse`
 
 ---
-
-## 🔗 Reference from Main README
-
-To reference this doc, add this line to your README.md:
-
-```markdown
-## GPR Template APIs 📦
-
-For full usage instructions, visit the [GPR Template SDK Documentation](docs/gpr_template.md).
-```
-
----
