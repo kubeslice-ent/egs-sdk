@@ -34,17 +34,37 @@ def create_gpr_template(
     instance_type: str,
     exit_duration: str,
     priority: int,
+    enforce_idle_timeout: bool,
     enable_eviction: bool,
     requeue_on_failure: bool,
-    enforce_idle_timeout: bool,
     idle_timeout_duration: Optional[str] = None,
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> str:
     """
-    Creates a GPR template.
+    Create a GPR template.
+
+    Args:
+        name (str): Template name.
+        cluster_name (str): Name of the cluster.
+        gpu_per_node_count (int): Number of GPUs per node.
+        num_gpu_nodes (int): Number of GPU nodes.
+        memory_per_gpu (int): Memory per GPU in GB.
+        gpu_shape (str): Shape of the GPU (e.g., "A100").
+        instance_type (str): Instance type (e.g., "a2-highgpu-2g").
+        exit_duration (str): Exit duration in string format (e.g., "1h").
+        priority (int): Priority value.
+        enforce_idle_timeout (bool): Whether to enforce idle timeout.
+        enable_eviction (bool): Whether eviction is enabled.
+        requeue_on_failure (bool): Whether to requeue on failure.
+        idle_timeout_duration (Optional[str]): Idle timeout duration if enforced.
+        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         str: Name of the created GPR template.
+
+    Raises:
+        ValueError: If idle timeout is enforced but duration is not provided.
+        UnhandledException: If API call fails.
     """
     if enforce_idle_timeout and not idle_timeout_duration:
         raise ValueError(
@@ -53,7 +73,6 @@ def create_gpr_template(
         )
 
     auth = egs.get_authenticated_session(authenticated_session)
-
     request_payload = CreateGprTemplateRequest(
         name=name,
         cluster_name=cluster_name,
@@ -87,10 +106,17 @@ def get_gpr_template(
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> GetGprTemplateResponse:
     """
-    Retrieves a GPR template by name.
+    Retrieve a GPR template by name.
+
+    Args:
+        gpr_template_name (str): Name of the GPR template.
+        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
-        GetGprTemplateResponse
+        GetGprTemplateResponse: GPR template object.
+
+    Raises:
+        UnhandledException: If API call fails.
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
@@ -109,10 +135,16 @@ def list_gpr_templates(
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> ListGprTemplatesResponse:
     """
-    Lists all GPR templates.
+    List all GPR templates.
+
+    Args:
+        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
-        ListGprTemplatesResponse
+        ListGprTemplatesResponse: List of GPR templates.
+
+    Raises:
+        UnhandledException: If API call fails.
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
@@ -147,10 +179,29 @@ def update_gpr_template(
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> UpdateGprTemplateResponse:
     """
-    Updates an existing GPR template.
+    Update an existing GPR template.
+
+    Args:
+        name (str): Name of the template.
+        cluster_name (str): Cluster name.
+        number_of_gpus (int): Total number of GPUs.
+        instance_type (str): Instance type.
+        exit_duration (str): Exit duration.
+        number_of_gpu_nodes (int): Number of nodes.
+        priority (int): Priority value.
+        memory_per_gpu (int): Memory per GPU in GB.
+        gpu_shape (str): GPU shape name.
+        enable_eviction (bool): Enable eviction flag.
+        requeue_on_failure (bool): Requeue on failure flag.
+        enforce_idle_timeout (bool): Enforce idle timeout flag.
+        idle_timeout_duration (Optional[str]): Timeout duration if enforced.
+        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         UpdateGprTemplateResponse
+
+    Raises:
+        UnhandledException: If API call fails.
     """
     auth = egs.get_authenticated_session(authenticated_session)
 
@@ -185,10 +236,17 @@ def delete_gpr_template(
     authenticated_session: Optional[AuthenticatedSession] = None
 ) -> DeleteGprTemplateResponse:
     """
-    Deletes a GPR template by name.
+    Delete a GPR template.
+
+    Args:
+        gpr_template_name (str): Template name to delete.
+        authenticated_session (Optional[AuthenticatedSession]): Auth session.
 
     Returns:
         DeleteGprTemplateResponse
+
+    Raises:
+        UnhandledException: If API call fails.
     """
     auth = egs.get_authenticated_session(authenticated_session)
 

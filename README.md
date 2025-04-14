@@ -53,6 +53,14 @@ pytest
 ```
 
 ---
+```markdown
+---
+
+## API Usage 📘
+
+- [GPR Template Binding APIs](docs/gpr_template_binding.md)
+
+---
 
 ## Contributing 🤝
 
