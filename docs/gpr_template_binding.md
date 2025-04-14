@@ -1,176 +1,119 @@
-# 🧠 GPR Template Binding SDK
+# GPR Template Binding SDK Usage 📘
 
-This module provides SDK functions for managing **GPR Template Bindings** in EGS (Elastic GPU Service).  
-GPR bindings connect GPU templates to specific clusters under a workspace (slice) and optionally enable automated GPU provisioning.
-
----
-
-## ⚙️ Functions Overview
-
-- [`create_gpr_template_binding`](#create_gpr_template_binding)
-- [`get_gpr_template_binding`](#get_gpr_template_binding)
-- [`list_gpr_template_bindings`](#list_gpr_template_bindings)
-- [`update_gpr_template_binding`](#update_gpr_template_binding)
-- [`delete_gpr_template_binding`](#delete_gpr_template_binding)
+These APIs allow interaction with GPR Template Bindings including creation, retrieval, listing, updating, and deletion.
 
 ---
 
-## 🔧 `create_gpr_template_binding`
+## `create_gpr_template_binding`
 
-Creates a new GPR Template Binding to associate clusters with GPU resource templates.
+Creates a new GPR template binding.
 
-### ✅ Function Signature
 ```python
-create_gpr_template_binding(
-    workspace_name: str,
-    clusters: List[Dict],
-    enable_auto_gpr: bool,
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> CreateGprTemplateBindingResponse
+from egs.gpr_template_binding import create_gpr_template_binding
 
-📥 Parameters
-Name	Type	Description
-workspace_name	str	The workspace (slice) name.
-clusters	List[Dict]	List of cluster template configurations.
-enable_auto_gpr	bool	Enable automatic GPR provisioning.
-authenticated_session	Optional	Auth session (optional).
-🧾 Cluster Dict Format
-
-{
-    "clusterName": "worker-1",
-    "defaultTemplateName": "template-1",
-    "templates": ["template-1", "fallback-template"]
-}
-
-📤 Returns
-
-CreateGprTemplateBindingResponse — includes name, namespace, clusters, and policy flags.
-▶️ Example
-
-create_gpr_template_binding(
-    workspace_name="ai-team",
+response = create_gpr_template_binding(
+    workspace_name="example-slice",
     clusters=[
         {
-            "clusterName": "worker-1",
-            "defaultTemplateName": "a100-high",
-            "templates": ["a100-high", "a100-low"]
+            "clusterName": "cluster-1",
+            "defaultTemplateName": "default-template",
+            "templates": ["template-a", "template-b"]
         }
     ],
     enable_auto_gpr=True
 )
+```
 
-📥 get_gpr_template_binding
+**Parameters**:
+- `workspace_name` (`str`): Slice name to bind templates.
+- `clusters` (`List[Dict]`): Cluster configurations.
+- `enable_auto_gpr` (`bool`): Toggle for auto GPR binding.
 
-Fetches an existing GPR Template Binding by name.
-✅ Function Signature
+**Returns**: `CreateGprTemplateBindingResponse` object.
 
-get_gpr_template_binding(
-    binding_name: str,
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> GetGprTemplateBindingResponse
+---
 
-📥 Parameters
-Name	Type	Description
-binding_name	str	Name of the GPR Template Binding
-authenticated_session	Optional	Optional auth session
-📤 Returns
+## `get_gpr_template_binding`
 
-GetGprTemplateBindingResponse with:
+Fetches a GPR template binding by name.
 
-    name, enable_auto_gpr
+```python
+from egs.gpr_template_binding import get_gpr_template_binding
 
-    List of clusters, each with:
+response = get_gpr_template_binding("gpr-template-binding-name")
+```
 
-        clusterName, defaultTemplateName, templates
+**Parameters**:
+- `binding_name` (`str`): Name of the GPR binding.
 
-        defaultTemplateStatus, templateStatus (map of name → status)
+**Returns**: `GetGprTemplateBindingResponse` object.
 
-▶️ Example
+---
 
-resp = get_gpr_template_binding("ai-team")
-print(resp.name)
+## `list_gpr_template_bindings`
 
-📋 list_gpr_template_bindings
+Lists all GPR template bindings.
 
-Lists all GPR Template Bindings across the tenant.
-✅ Function Signature
+```python
+from egs.gpr_template_binding import list_gpr_template_bindings
 
-list_gpr_template_bindings(
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> ListGprTemplateBindingsResponse
+response = list_gpr_template_bindings()
+```
 
-📤 Returns
+**Returns**: `ListGprTemplateBindingsResponse` object containing all bindings.
 
-ListGprTemplateBindingsResponse with:
+---
 
-    templateBindings: List of GetGprTemplateBindingResponse
+## `update_gpr_template_binding`
 
-▶️ Example
+Updates an existing GPR template binding.
 
-resp = list_gpr_template_bindings()
-for b in resp.templateBindings:
-    print(b.name)
+```python
+from egs.gpr_template_binding import update_gpr_template_binding
 
-✏️ update_gpr_template_binding
-
-Updates the cluster/template mapping or policy on an existing binding.
-✅ Function Signature
-
-update_gpr_template_binding(
-    workspace_name: str,
-    clusters: List[Dict],
-    enable_auto_gpr: bool,
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> UpdateGprTemplateBindingResponse
-
-📥 Parameters
-
-Same as create_gpr_template_binding.
-📤 Returns
-
-UpdateGprTemplateBindingResponse — empty structure on success.
-▶️ Example
-
-update_gpr_template_binding(
-    workspace_name="ai-team",
+response = update_gpr_template_binding(
+    workspace_name="example-slice",
     clusters=[
         {
-            "clusterName": "worker-1",
-            "defaultTemplateName": "new-template",
-            "templates": ["new-template", "legacy-template"]
+            "clusterName": "cluster-1",
+            "defaultTemplateName": "updated-template",
+            "templates": ["template-a", "template-c"]
         }
     ],
     enable_auto_gpr=False
 )
+```
 
-🗑️ delete_gpr_template_binding
+**Parameters**:
+- Same as `create_gpr_template_binding`.
 
-Deletes a binding by name.
-✅ Function Signature
+**Returns**: `UpdateGprTemplateBindingResponse`
 
-delete_gpr_template_binding(
-    binding_name: str,
-    authenticated_session: Optional[AuthenticatedSession] = None
-) -> DeleteGprTemplateBindingResponse
+---
 
-📥 Parameters
-Name	Type	Description
-binding_name	str	Name of the binding to delete
-authenticated_session	Optional	Auth session
-📤 Returns
+## `delete_gpr_template_binding`
 
-DeleteGprTemplateBindingResponse — empty on success.
-▶️ Example
+Deletes a GPR template binding.
 
-delete_gpr_template_binding("ai-team")
+```python
+from egs.gpr_template_binding import delete_gpr_template_binding
 
-✅ Authentication
+response = delete_gpr_template_binding("gpr-template-binding-name")
+```
 
-All functions optionally accept a shared AuthenticatedSession. If not passed, it defaults to the active session:
+**Parameters**:
+- `binding_name` (`str`): Name of the binding to delete.
 
-import egs
-session = egs.get_authenticated_session()
+**Returns**: `DeleteGprTemplateBindingResponse`
 
-You can pass it explicitly:
+---
 
-create_gpr_template_binding(..., authenticated_session=session)
+## 🔗 Reference from Main README
+
+To reference this file from your main `README.md`, add:
+
+```markdown
+## GPR Template Bindings API 📦
+
+For full usage instructions, visit the [GPR Template Bindings Documentation](docs/gpr_template_binding.md).
+```
