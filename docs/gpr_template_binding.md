@@ -1,6 +1,6 @@
 # GPR Template Binding SDK Usage 📘
 
-These APIs allow interaction with GPR Template Bindings including creation, retrieval, listing, updating, and deletion.
+This document describes how to use the Python SDK to manage GPR Template Bindings including creation, listing, retrieval, updating, and deletion.
 
 ---
 
@@ -24,12 +24,16 @@ response = create_gpr_template_binding(
 )
 ```
 
-**Parameters**:
-- `workspace_name` (`str`): Slice name to bind templates.
-- `clusters` (`List[Dict]`): Cluster configurations.
-- `enable_auto_gpr` (`bool`): Toggle for auto GPR binding.
+### 📥 Parameters
 
-**Returns**: `CreateGprTemplateBindingResponse` object.
+| Parameter           | Type        | Description |
+|---------------------|-------------|-------------|
+| `workspace_name`    | `str`       | Name of the workspace or slice. |
+| `clusters`          | `List[Dict]`| List of clusters, each containing `clusterName`, `defaultTemplateName`, and `templates`. |
+| `enable_auto_gpr`   | `bool`      | Enable automatic GPR binding. |
+| `authenticated_session` | `Optional[AuthenticatedSession]` | Optional authentication context. |
+
+**Returns**: `CreateGprTemplateBindingResponse`
 
 ---
 
@@ -40,13 +44,17 @@ Fetches a GPR template binding by name.
 ```python
 from egs.gpr_template_binding import get_gpr_template_binding
 
-response = get_gpr_template_binding("gpr-template-binding-name")
+response = get_gpr_template_binding("binding-name")
 ```
 
-**Parameters**:
-- `binding_name` (`str`): Name of the GPR binding.
+### 📥 Parameters
 
-**Returns**: `GetGprTemplateBindingResponse` object.
+| Parameter             | Type   | Description |
+|-----------------------|--------|-------------|
+| `binding_name`        | `str`  | Name of the GPR binding to fetch. |
+| `authenticated_session` | `Optional[AuthenticatedSession]` | Optional authentication context. |
+
+**Returns**: `GetGprTemplateBindingResponse`
 
 ---
 
@@ -60,7 +68,13 @@ from egs.gpr_template_binding import list_gpr_template_bindings
 response = list_gpr_template_bindings()
 ```
 
-**Returns**: `ListGprTemplateBindingsResponse` object containing all bindings.
+### 📥 Parameters
+
+| Parameter               | Type   | Description |
+|-------------------------|--------|-------------|
+| `authenticated_session` | `Optional[AuthenticatedSession]` | Optional authentication context. |
+
+**Returns**: `ListGprTemplateBindingsResponse`
 
 ---
 
@@ -84,8 +98,14 @@ response = update_gpr_template_binding(
 )
 ```
 
-**Parameters**:
-- Same as `create_gpr_template_binding`.
+### 📥 Parameters
+
+| Parameter           | Type        | Description |
+|---------------------|-------------|-------------|
+| `workspace_name`    | `str`       | Name of the workspace or slice. |
+| `clusters`          | `List[Dict]`| List of clusters, each containing `clusterName`, `defaultTemplateName`, and `templates`. |
+| `enable_auto_gpr`   | `bool`      | Enable automatic GPR binding. |
+| `authenticated_session` | `Optional[AuthenticatedSession]` | Optional authentication context. |
 
 **Returns**: `UpdateGprTemplateBindingResponse`
 
@@ -93,16 +113,20 @@ response = update_gpr_template_binding(
 
 ## `delete_gpr_template_binding`
 
-Deletes a GPR template binding.
+Deletes a GPR template binding by name.
 
 ```python
 from egs.gpr_template_binding import delete_gpr_template_binding
 
-response = delete_gpr_template_binding("gpr-template-binding-name")
+response = delete_gpr_template_binding("binding-name")
 ```
 
-**Parameters**:
-- `binding_name` (`str`): Name of the binding to delete.
+### 📥 Parameters
+
+| Parameter             | Type   | Description |
+|-----------------------|--------|-------------|
+| `binding_name`        | `str`  | Name of the GPR binding to delete. |
+| `authenticated_session` | `Optional[AuthenticatedSession]` | Optional authentication context. |
 
 **Returns**: `DeleteGprTemplateBindingResponse`
 
@@ -110,10 +134,12 @@ response = delete_gpr_template_binding("gpr-template-binding-name")
 
 ## 🔗 Reference from Main README
 
-To reference this file from your main `README.md`, add:
+To reference this doc, add this line to your `README.md`:
 
 ```markdown
 ## GPR Template Bindings API 📦
 
 For full usage instructions, visit the [GPR Template Bindings Documentation](docs/gpr_template_binding.md).
 ```
+
+---
