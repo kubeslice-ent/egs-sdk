@@ -213,7 +213,7 @@ if __name__ == "__main__":
                                             workspace_name,
                                             authenticated_session=auth)
                     cur_inventory = inventory.workspace_inventory[0]
-                    print(f"Creating GPR Template for {cluster_name}")
+                    print(f"Creating GPR Template for {cluster_name} using inventory {cur_inventory}")
                     response = egs.create_gpr_template(
                                     name=cur_ws["name"]+'-'+cluster_name,
                                     cluster_name=cluster_name,
@@ -246,8 +246,8 @@ if __name__ == "__main__":
                     #                 authenticated_session=auth)
                     print(f"✅ Successfully Created GPR Template: {response}")
                     gpr_template_name = response
-                    template_resp = egs.get_gpr_template(gpr_template_name, auth)
-                    print(f"✅ Successfully Got GPR Template: {template_resp}")
+                    # template_resp = egs.get_gpr_template(gpr_template_name, auth)
+                    # print(f"✅ Successfully Got GPR Template: {template_resp}")
 
                     # template_resp1 = egs.update_gpr_template(
                     #                     name=template_resp.name,
@@ -278,45 +278,44 @@ if __name__ == "__main__":
                 
                 # Bind the Template to workspace
                 try:
-                    print(f"Bind the {gpr_template_name} Template to workspace {workspace_name}")
+                    print(f"Binding the {gpr_template_name} Template to workspace {workspace_name}")
                     cluster_dict = {
                                         "clusterName": cluster_name,
                                         "defaultTemplateName": gpr_template_name,
                                         "templates": [gpr_template_name]
                                     }
-                    response = egs.create_gpr_template_binding(
+                    binding_resp = egs.create_gpr_template_binding(
                                         workspace_name=workspace_name,
                                         clusters=[cluster_dict],
                                         enable_auto_gpr=True,
                                         authenticated_session=auth)
 
-                    print(f"✅ Successfully Created GPR Template Binding: {response}")
-                    gpr_template_binding_name = response.name
-                    template_resp2 = egs.get_gpr_template_binding(
-                                            gpr_template_binding_name,
-                                            auth)
-                    print(f"✅ Successfully Got GPR Template Binding: {template_resp2}")
+                    print(f"✅ Successfully Created GPR Template Binding: {binding_resp}")
+                    gpr_template_binding_name = binding_resp.name
+                    # template_resp2 = egs.get_gpr_template_binding(
+                    #                         gpr_template_binding_name,
+                    #                         auth)
+                    # print(f"✅ Successfully Got GPR Template Binding: {template_resp2}")
 
-                    update_resp = egs.update_gpr_template_binding(
-                                    workspace_name=workspace_name,
-                                    clusters=[cluster_dict],
-                                    enable_auto_gpr=False,
-                                    authenticated_session=auth)
-                    print(f"✅ Successfully Updated GPR Template Binding: {update_resp}")
+                    # update_resp = egs.update_gpr_template_binding(
+                    #                 workspace_name=workspace_name,
+                    #                 clusters=[cluster_dict],
+                    #                 enable_auto_gpr=False,
+                    #                 authenticated_session=auth)
+                    # print(f"✅ Successfully Updated GPR Template Binding: {update_resp}")
 
-                    template_resp3 = egs.get_gpr_template_binding(
-                                                gpr_template_binding_name,
-                                                auth)
-                    print(f"✅ Successfully Got GPR Template Binding: {template_resp3}")
+                    # template_resp3 = egs.get_gpr_template_binding(
+                    #                             gpr_template_binding_name,
+                    #                             auth)
+                    # print(f"✅ Successfully Got GPR Template Binding: {template_resp3}")
 
                     # responses = egs.list_gpr_templates(auth)
                     # print(f"✅ Successfully Got List of GPR Template: {responses}")
 
-                    del_resp1 = egs.delete_gpr_template_binding(gpr_template_binding_name, auth)
-                    print(f"✅ Successfully Deleted GPR Template Binding: {del_resp1}")
+                    # del_resp1 = egs.delete_gpr_template_binding(gpr_template_binding_name, auth)
+                    # print(f"✅ Successfully Deleted GPR Template Binding: {del_resp1}")
                 except Exception as e:
                     print(f"❌ Unexpected error for {cur_ws['name']}: {e}")
-
 
             try:
                 response = egs.create_api_key(
