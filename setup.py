@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="egs-sdk",
-    version="3.0.0",  # Replace with the current version of your package
+    version="4.0.0",  # Replace with the current version of your package
     description="Elastic GPU Service SDK for GPU resource management in Kubernetes clusters",
     long_description=(
         "The Elastic GPU Service platform offers a system and workflows for efficient GPU resource management "
