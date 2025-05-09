@@ -82,4 +82,66 @@ def test_delete_api_key_not_found(auth_session):
         egs.delete_api_key(
             api_key="nonexistentkey",
             authenticated_session=auth_session
-        ) 
+        )
+
+
+def test_create_api_key_invalid_role(auth_session):
+    """Test that creating an API key with invalid role raises ValueError"""
+    with pytest.raises(ValueError):
+        egs.create_api_key(
+            name="test",
+            role="InvalidRole",
+            validity="1d",
+            username="user",
+            description="desc",
+            authenticated_session=auth_session
+        )
+
+
+def test_create_api_key_expired_validity(auth_session):
+    """Test that creating an API key with expired validity raises ValueError"""
+    expired_date = (datetime.utcnow() - timedelta(days=1)).strftime("%Y-%m-%d")
+    with pytest.raises(ValueError):
+        egs.create_api_key(
+            name="test",
+            role="Owner",
+            validity=expired_date,
+            username="user",
+            description="desc",
+            authenticated_session=auth_session
+        )
+
+
+def test_create_api_key_duplicate_name(auth_session):
+    """Test that creating an API key with duplicate name returns a different key"""
+    key_name = f"test-dup-{uuid.uuid4().hex[:6]}"
+    validity_date = (datetime.utcnow() + timedelta(days=1)).strftime("%Y-%m-%d")
+    
+    # Create first key
+    first_key = egs.create_api_key(
+        name=key_name,
+        role="Owner",
+        validity=validity_date,
+        username="user",
+        description="first key",
+        authenticated_session=auth_session
+    )
+    assert isinstance(first_key, str)
+    
+    # Create second key with same name
+    second_key = egs.create_api_key(
+        name=key_name,
+        role="Owner",
+        validity=validity_date,
+        username="user",
+        description="second key",
+        authenticated_session=auth_session
+    )
+    assert isinstance(second_key, str)
+    
+    # Verify that the keys are different
+    assert first_key != second_key, "Duplicate API keys should return different values"
+    
+    # Clean up both keys
+    egs.delete_api_key(api_key=first_key, authenticated_session=auth_session)
+    egs.delete_api_key(api_key=second_key, authenticated_session=auth_session) 

@@ -1,7 +1,9 @@
 # tests/test_workspace.py
+import os
 import pytest
 import egs
 from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
+from egs.exceptions import ApiKeyNotFound
 
 
 def test_list_workspaces(auth_session, workspace):
@@ -10,6 +12,30 @@ def test_list_workspaces(auth_session, workspace):
     assert isinstance(resp, ListWorkspacesResponse)
     names = [w.name for w in resp.workspaces]
     assert ws_name in names
+
+
+def test_list_workspaces_invalid_session():
+    """Test that listing workspaces fails with invalid session"""
+    with pytest.raises(Exception):
+        egs.list_workspaces(authenticated_session=None)
+
+
+def test_list_workspaces_unauthorized():
+    """Test that listing workspaces fails with unauthorized access"""
+    endpoint = os.getenv("EGS_ENDPOINT")
+    if not endpoint:
+        pytest.skip("EGS_ENDPOINT must be set")
+    # Create a session with invalid credentials
+    with pytest.raises(ApiKeyNotFound):
+        invalid_session = egs.authenticate(endpoint, api_key="invalid-key", sdk_default=False)
+        egs.list_workspaces(authenticated_session=invalid_session)
+
+
+def test_workspace_operations_invalid_name(auth_session):
+    """Test that workspace operations fail with invalid workspace name"""
+    invalid_name = "invalid-workspace-name-that-does-not-exist"
+    with pytest.raises(Exception):
+        egs.list_workspaces(authenticated_session=auth_session, workspace_name=invalid_name)
 
 
 def test_get_workspace_kubeconfig(auth_session, workspace):
