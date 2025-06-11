@@ -1,0 +1,16 @@
+projectname: "avesha"
+workspaces:
+  - name: "workspace-3a"
+    add_namespaces:
+      - "namespace-3a3"
+      - "namespace-3a4"
+    add_clusters:
+      - "worker-2"
+      - "worker-3"
+
+  # Example of updating another workspace
+  # - name: "workspace-3b"
+  #   add_namespaces:
+  #     - "namespace-3b1"
+  #   add_clusters:
+  #     - "worker-4"
