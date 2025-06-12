@@ -1,0 +1,14 @@
+{
+  "test_team": {
+    "ENDPOINT": "https://34.73.97.21",
+    "API_KEY": "0afc6c1e-30a4-4058-a0de-23e3c75d9933",
+    "WORKSPACE_NAME": "green",
+    "WORKSPACE_NAMESPACE": "green",
+    "CLUSTER_NAME": ["worker-1"],
+    "SECRET_NAME": "kubeslice-rbac-rw-slice-green",
+    "USER_NAME": "test-user",
+    "USER_EMAIL": "test@example.com",
+    "PROJECT_NAMESPACE": "kubeslice-avesha",
+    "KUBECONFIG_FILE": "/home/sameer/Documents/work/egs/dev-cluster.yaml"
+  }
+}
