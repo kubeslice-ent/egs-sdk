@@ -1,0 +1,40 @@
+# Inference Endpoints Configuration
+# This file defines one or more inference endpoints to be created
+inference_endpoints:
+  - endpoint_name: "from-sdk-7"
+    cluster_name: "worker-1"
+    workspace_name: "green"
+    model_format_name: "sklearn"
+    # instance_type: "a2-highgpu-2g"
+    # gpu_shape: "NVIDIA-A100-SXM4-40GB"
+    # memory_per_gpu: 40
+    # number_of_gpu_nodes: 2
+    # number_of_gpus: 1
+    exit_duration: "1h"
+    priority: 100
+
+  # Example 2: Complete endpoint configuration with all optional parameters
+  # - endpoint_name: "llama2-endpoint"
+  #   cluster_name: "worker-1"
+  #   workspace_name: "green"
+  #   model_format_name: "llama2-7b"
+  #   storage_uri: "s3://your-model-bucket/llama2-7b"
+  #   args: "--model llama2-7b --temperature 0.7"
+  #   # Alternative args format as list:
+  #   # args:
+  #   #   - "--model"
+  #   #   - "llama2-7b"
+  #   #   - "--temperature"
+  #   #   - "0.7"
+  #   secret:
+  #     api_key: "your-api-key"
+  #     token: "your-token"
+  #   # Alternative secret format as JSON string:
+  #   # secret: '{"api_key": "your-api-key", "token": "your-token"}'
+  #   gpu_shape: "A100"
+  #   instance_type: "a2-highgpu-1g"
+  #   memory_per_gpu: 40
+  #   number_of_gpu_nodes: 1
+  #   number_of_gpus: 1
+  #   exit_duration: "2h"
+  #   priority: 200
