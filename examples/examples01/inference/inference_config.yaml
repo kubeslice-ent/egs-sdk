@@ -1,7 +1,7 @@
 # Inference Endpoints Configuration
 # This file defines one or more inference endpoints to be created
 inference_endpoints:
-  - endpoint_name: "from-sdk-7"
+  - endpoint_name: "from-sdk-11"
     cluster_name: "worker-1"
     workspace_name: "green"
     model_format_name: "sklearn"

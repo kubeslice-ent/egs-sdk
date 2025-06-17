@@ -186,7 +186,8 @@ if __name__ == "__main__":
                         f"({cur_inventory.total_gpu_nodes})"
                     )
 
-                print(f"Using inventory: {cur_inventory}")
+                # print(f"Using inventory: {cur_inventory}")
+                
 
                 # Determine GPU specifications (use config values or inventory defaults)
                 gpu_shape = endpoint_config.get("gpu_shape") or cur_inventory.gpu_shape
@@ -198,22 +199,29 @@ if __name__ == "__main__":
                 # Validate GPU specifications
                 if not all([gpu_shape, instance_type, memory_per_gpu, number_of_gpu_nodes, number_of_gpus]):
                     raise ValueError("Missing required GPU specification. Provide GPU parameters in config or ensure inventory has these values.")
+                
+                # print(yaml.dump(endpoint_config['raw_model_spec'][0]))
+                # raw_model_spec = yaml.dump(endpoint_config['raw_model_spec'][0], default_flow_style=False)
+                # raw_model_spec_stringified = raw_model_spec.replace('\n', '\\n')
+                # print(raw_model_spec_stringified)
+
 
                 # Create the inference endpoint
                 inference_endpoint = egs.create_inference_endpoint_with_custom_model_spec(
                     cluster_name=endpoint_config["cluster_name"],
                     endpoint_name=endpoint_config["endpoint_name"],
                     workspace_name=endpoint_config["workspace_name"],
-                    raw_model_spec=yaml.dump(endpoint_config['raw_model_spec']),
-                    gpu_spec=GpuSpec(
-                        gpu_shape=gpu_shape,
-                        instance_type=instance_type,
-                        memory_per_gpu=memory_per_gpu,
-                        number_of_gpu_nodes=number_of_gpu_nodes,
-                        number_of_gpus=number_of_gpus,
-                        exit_duration=endpoint_config["exit_duration"],
-                        priority=endpoint_config["priority"]
-                    ),
+                    raw_model_spec=yaml.dump(endpoint_config['raw_model_spec'][0]),
+                    gpu_spec= None,
+                    # GpuSpec(
+                    #     gpu_shape=gpu_shape,
+                    #     instance_type=instance_type,
+                    #     memory_per_gpu=memory_per_gpu,
+                    #     number_of_gpu_nodes=number_of_gpu_nodes,
+                    #     number_of_gpus=number_of_gpus,
+                    #     exit_duration=endpoint_config["exit_duration"],
+                    #     priority=endpoint_config["priority"]
+                    # ),
                     authenticated_session=auth
                 )
 

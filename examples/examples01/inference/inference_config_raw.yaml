@@ -1,7 +1,7 @@
 # Inference Endpoints Configuration
 # This file defines one or more inference endpoints to be created
 inference_endpoints:
-  - endpoint_name: "from-sdk-6"
+  - endpoint_name: "from-sdk-10-cpu"
     cluster_name: "worker-1"
     workspace_name: "green"
     model_format_name: "sklearn"
@@ -16,28 +16,27 @@ inference_endpoints:
       - apiVersion: serving.kserve.io/v1beta1
         kind: InferenceService
         metadata:
-        name: huggingface-llama3
+          name: huggingface-llama3
         spec:
-        predictor:
-          model:
-          modelFormat:
-            name: huggingface
-          args:
-            - --model_name=llama3
-            - --model_id=meta-llama/meta-llama-3-8b-instruct
-          env:
-            - name: HF_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: hf-secret
-                  key: HF_TOKEN
-                  optional: false
-          resources:
-            limits:
-            cpu: "6"
-            memory: 24Gi
-            nvidia.com/gpu: "1"
-            requests:
-              cpu: "6"
-              memory: 24Gi
-              nvidia.com/gpu: "1"
+          predictor:
+            model:
+              modelFormat:
+                name: huggingface
+              args:
+                - --model_name=llama3
+              env:
+                - name: HF_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: hf-secret
+                      key: HF_TOKEN
+                      optional: false
+              resources:
+                limits:
+                  cpu: "6"
+                  memory: 24Gi
+                  nvidia.com/gpu: "1"
+                requests:
+                  cpu: "6"
+                  memory: 24Gi
+                  nvidia.com/gpu: "1"
