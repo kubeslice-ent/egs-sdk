@@ -17,6 +17,8 @@ delete_api_key = api_key.delete_api_key
 list_api_keys = api_key.list_api_keys
 
 create_workspace = workspace.create_workspace
+update_workspace = workspace.update_workspace
+detach_cluster_from_workspace = workspace.detach_cluster_from_workspace
 delete_workspace = workspace.delete_workspace
 list_workspaces = workspace.list_workspaces
 get_workspace_kubeconfig = workspace.get_workspace_kubeconfig

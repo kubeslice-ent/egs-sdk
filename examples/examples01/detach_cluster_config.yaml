@@ -1,0 +1,22 @@
+projectname: "avesha"
+
+# Configuration for batch detach operations
+detach_operations:
+  # Example 1: Detach worker-2 from workspace-3a
+  - workspace_name: "workspace-3a"
+    cluster_name: "worker-2"
+
+  # Example 2: Detach worker-3 from workspace-3b
+  - workspace_name: "workspace-3b"
+    cluster_name: "worker-3"
+
+  # Example 3: Detach a cluster from another workspace
+  # - workspace_name: "my-workspace"
+  #   cluster_name: "cluster-to-remove"
+# Notes:
+# - Each detach operation requires both workspace_name and cluster_name
+# - The operation will fail if:
+#   - The workspace doesn't exist
+#   - The cluster is not attached to the workspace
+#   - It's the last cluster in the workspace (at least one must remain)
+# - Use the detach_cluster_from_workspace.py script with --config to process these operations
