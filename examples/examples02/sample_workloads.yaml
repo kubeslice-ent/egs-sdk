@@ -1,0 +1,256 @@
+# Sample Workloads for Auto-GPR Testing in "purple" workspace
+# These workloads demonstrate how auto-GPR triggers when GPU resources are requested
+# All workloads use the "purple" namespace and single GPU requests
+
+---
+# Sample 1: Simple GPU Pod for ML Training
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml-training-pod
+  namespace: purple
+  labels:
+    app: ml-training
+    workload-type: training
+    gpu-requirement: single
+spec:
+  containers:
+    - name: pytorch-trainer
+      image: pytorch/pytorch:latest
+      command: ["/bin/bash", "-c", "echo 'Training started...'; sleep 3600"]
+      resources:
+        requests:
+          nvidia.com/gpu: 1
+          memory: "8Gi"
+          cpu: "2"
+        limits:
+          nvidia.com/gpu: 1
+          memory: "16Gi"
+          cpu: "4"
+  restartPolicy: Never
+
+---
+# Sample 2: Distributed Training Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: distributed-training
+  namespace: purple
+  labels:
+    app: distributed-training
+    workload-type: training
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: distributed-training
+  template:
+    metadata:
+      labels:
+        app: distributed-training
+        workload-type: training
+    spec:
+      containers:
+        - name: distributed-trainer
+          image: nvcr.io/nvidia/pytorch:21.10-py3
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "echo 'Distributed training started...'; sleep 3600",
+            ]
+          resources:
+            requests:
+              nvidia.com/gpu: 1
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+              cpu: "4"
+
+---
+# Sample 3: Batch Processing Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-processing-job
+  namespace: purple
+  labels:
+    app: batch-processing
+    workload-type: batch
+    priority: high
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: batch-processing
+        workload-type: batch
+        priority: high
+    spec:
+      containers:
+        - name: batch-processor
+          image: nvidia/cuda:11.8-runtime-ubuntu20.04
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "echo 'Batch processing started...'; nvidia-smi; sleep 1800",
+            ]
+          resources:
+            requests:
+              nvidia.com/gpu: 1
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+              cpu: "4"
+      restartPolicy: Never
+
+---
+# Sample 4: Inference Service with WorkloadSelector
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-service
+  namespace: autogpr-app-ns
+  labels:
+    app: inference-service
+    workload-type: inference
+    tier: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: inference-service
+  template:
+    metadata:
+      labels:
+        app: inference-service
+        workload-type: inference
+        tier: production
+        gpu-requirement: single
+    spec:
+      containers:
+        - name: inference-server
+          image: tensorflow/serving:latest-gpu
+          resources:
+            requests:
+              nvidia.com/gpu: 1
+              memory: "4Gi"
+              cpu: "2"
+            limits:
+              nvidia.com/gpu: 1
+              memory: "8Gi"
+              cpu: "4"
+          ports:
+            - containerPort: 8501
+              name: rest-api
+            - containerPort: 8500
+              name: grpc-api
+
+---
+# Sample 5: Development Pod with Low Priority
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-testing-pod
+  namespace: autogpr-app-ns
+  labels:
+    app: dev-testing
+    workload-type: development
+    priority: low
+spec:
+  containers:
+    - name: dev-container
+      image: jupyter/tensorflow-notebook:latest
+      resources:
+        requests:
+          nvidia.com/gpu: 1
+          memory: "4Gi"
+          cpu: "1"
+        limits:
+          nvidia.com/gpu: 1
+          memory: "8Gi"
+          cpu: "2"
+      ports:
+        - containerPort: 8888
+          name: jupyter
+  restartPolicy: Never
+
+---
+# Sample 6: Stateful Set for Persistent GPU Workloads
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gpu-database
+  namespace: autogpr-app-ns
+  labels:
+    app: gpu-database
+    workload-type: database
+spec:
+  serviceName: gpu-database
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gpu-database
+  template:
+    metadata:
+      labels:
+        app: gpu-database
+        workload-type: database
+    spec:
+      containers:
+        - name: gpu-db
+          image: nvidia/cuda:11.8-runtime-ubuntu20.04
+          command:
+            [
+              "/bin/bash",
+              "-c",
+              "echo 'GPU database started...'; sleep infinity",
+            ]
+          resources:
+            requests:
+              nvidia.com/gpu: 1
+              memory: "8Gi"
+              cpu: "2"
+            limits:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+              cpu: "4"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 100Gi
+
+---
+# Sample Service for Inference Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: inference-service
+  namespace: autogpr-app-ns
+  labels:
+    app: inference-service
+spec:
+  selector:
+    app: inference-service
+  ports:
+    - name: rest-api
+      port: 8501
+      targetPort: 8501
+    - name: grpc-api
+      port: 8500
+      targetPort: 8500
+  type: ClusterIP

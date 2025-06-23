@@ -1,0 +1,78 @@
+# Auto-GPR End-to-End Test Configuration
+# Updated for manual testing with workspace "purple"
+
+# ==========================================
+# Workspace Configuration
+# ==========================================
+workspace:
+  name: "purple"
+  clusters:
+    - "worker-1"
+  namespaces:
+    - "purple"
+  username: "test-user"
+  email: "test@example.com"
+  apiKeyValidity: "2024-12-31"
+
+# ==========================================
+# GPR Template Configurations
+# ==========================================
+# Templates will be created based on cluster inventory
+# with these configuration overrides
+gprTemplates:
+  - name: "purple-high-performance-template"
+    cluster: "worker-1"
+    priority: 200
+    exitDuration: "1h"
+    numGpuNodes: 1
+    enforceIdleTimeout: true
+    idleTimeoutDuration: "30m"
+    enableEviction: true
+    requeueOnFailure: true
+
+  - name: "purple-standard-template"
+    cluster: "worker-1"
+    priority: 150
+    exitDuration: "30m"
+    numGpuNodes: 1
+    enforceIdleTimeout: true
+    idleTimeoutDuration: "15m"
+    enableEviction: true
+    requeueOnFailure: true
+
+# ==========================================
+# Template Binding Configuration
+# ==========================================
+# This binds templates to the workspace and enables auto-GPR
+templateBinding:
+  enableAutoGpr: true
+  clusters:
+    - clusterName: "worker-1"
+      defaultTemplateName: "purple-high-performance-template"
+      templates:
+        - "purple-high-performance-template"
+        - "purple-standard-template"
+
+# ==========================================
+# Test Configuration
+# ==========================================
+test:
+  validateCreation: true
+  runCleanup: false
+  timeoutSeconds: 300
+
+# ==========================================
+# Advanced Configuration (Optional)
+# ==========================================
+advanced:
+  # Retry configuration
+  retryAttempts: 3
+  retryDelaySeconds: 5
+
+  # Validation settings
+  strictValidation: true
+  validateInventory: true
+
+  # Output settings
+  saveOutputs: true
+  outputDirectory: "autogpr_outputs"
