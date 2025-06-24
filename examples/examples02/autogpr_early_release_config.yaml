@@ -1,0 +1,135 @@
+# Auto-GPR Early Release End-to-End Test Configuration
+# This configuration is specifically designed to test the complete auto-GPR early release lifecycle
+
+# ==========================================
+# Workspace Configuration
+# ==========================================
+workspace:
+  name: "purple-test"
+  clusters:
+    - "worker-1"
+  namespaces:
+    - "purple-test"
+  username: "test-user"
+  email: "test@example.com"
+  apiKeyValidity: "2024-12-31"
+
+# ==========================================
+# GPR Template Configurations for Auto-GPR
+# ==========================================
+# Templates will be created based on cluster inventory
+# with short idle timeouts for quick early release testing
+gprTemplates:
+  - name: "early-release-tmpl-1"
+    cluster: "worker-1"
+    priority: 200
+    exitDuration: "1h"
+    numGpuNodes: 1
+    enforceIdleTimeout: true
+    idleTimeoutDuration: "1m" # Short timeout for quick early release
+    enableEviction: true
+    requeueOnFailure: true
+
+  - name: "early-release-tmpl-2"
+    cluster: "worker-1"
+    priority: 150
+    exitDuration: "30m"
+    numGpuNodes: 1
+    enforceIdleTimeout: true
+    idleTimeoutDuration: "2m" # Short timeout for quick early release
+    enableEviction: true
+    requeueOnFailure: true
+
+# ==========================================
+# Template Binding Configuration
+# ==========================================
+# This binds templates to the workspace and enables auto-GPR
+templateBinding:
+  enableAutoGpr: true
+  clusters:
+    - clusterName: "worker-1"
+      defaultTemplateName: "early-release-tmpl-1"
+      templates:
+        - "early-release-tmpl-1"
+        - "early-release-tmpl-2"
+
+# ==========================================
+# Test Workloads Configuration
+# ==========================================
+# These workloads will trigger EGS-Agent auto-GPR creation
+testWorkloads:
+  - type: "Pod"
+    gpuRequests: 1
+    description: "Single GPU pod for auto-GPR early release testing"
+
+  - type: "Deployment"
+    gpuRequests: 1
+    replicas: 1
+    description: "Multi-replica deployment for auto-GPR testing"
+
+# ==========================================
+# Test Configuration
+# ==========================================
+test:
+  validateCreation: true
+  validateEarlyRelease: true
+  validateInventoryDeallocation: true
+  timeoutSeconds: 600
+  monitoringIntervalSeconds: 15
+
+# ==========================================
+# Advanced Configuration
+# ==========================================
+advanced:
+  # Retry configuration
+  retryAttempts: 3
+  retryDelaySeconds: 5
+
+  # Validation settings
+  strictValidation: true
+  validateInventory: true
+  validateWorkloadLifecycle: true
+
+  # EGS-Agent monitoring
+  monitorEgsAgentLabels: true
+  validateSchedulingGates: true
+
+  # Auto-GPR early release validation
+  validateEarlyReleaseStates: true
+  expectedEarlyReleaseStates:
+    - "Draining"
+    - "EarlyReleased"
+    - "Complete"
+
+  # Output settings
+  saveOutputs: true
+  outputDirectory: "test_outputs"
+  generateDetailedReport: true
+
+# ==========================================
+# Expected Behavior Documentation
+# ==========================================
+# This section documents the expected behavior for validation
+expectedBehavior:
+  egsAgent:
+    - "Watches application namespace 'purple-test'"
+    - "Detects pods with GPU requests and scheduling gates"
+    - "Creates auto-GPRs using configured templates"
+    - "Labels pods with 'egs.kubeslice.io/gpr-id'"
+    - "Triggers early release when workloads are removed"
+
+  aiopOperator:
+    - "Adds scheduling gates to GPU workloads without GPRs"
+    - "Removes scheduling gates when GPRs are provisioned"
+    - "Manages workload lifecycle during GPR state transitions"
+
+  gprLifecycle:
+    - "Auto-GPRs created in 'Pending' state"
+    - "Transition to 'Provisioning' then 'Successful'"
+    - "Early release triggered by workload removal"
+    - "Transition through 'Draining' to 'EarlyReleased'/'Complete'"
+
+  inventoryManagement:
+    - "GPU inventory allocated during GPR provisioning"
+    - "Inventory deallocated during early release"
+    - "Final state should show deallocated inventory"
