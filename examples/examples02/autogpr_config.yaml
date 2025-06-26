@@ -1,68 +1,76 @@
 # Auto-GPR End-to-End Test Configuration
-# Updated for manual testing with workspace "purple"
+# Updated for e2e testing with workspace "purple"
 
 # ==========================================
 # Workspace Configuration
 # ==========================================
 workspace:
-  name: "purple"
+  name: "purple-test"
   clusters:
     - "worker-1"
   namespaces:
-    - "purple"
+    - "purple-test"
   username: "test-user"
   email: "test@example.com"
   apiKeyValidity: "2024-12-31"
 
 # ==========================================
-# GPR Template Configurations
+# GPR Template Configuration (Single Template)
 # ==========================================
-# Templates will be created based on cluster inventory
-# with these configuration overrides
-gprTemplates:
-  - name: "purple-high-performance-template"
-    cluster: "worker-1"
-    priority: 200
-    exitDuration: "1h"
-    numGpuNodes: 1
-    enforceIdleTimeout: true
-    idleTimeoutDuration: "30m"
-    enableEviction: true
-    requeueOnFailure: true
-
-  - name: "purple-standard-template"
-    cluster: "worker-1"
-    priority: 150
-    exitDuration: "30m"
-    numGpuNodes: 1
-    enforceIdleTimeout: true
-    idleTimeoutDuration: "15m"
-    enableEviction: true
-    requeueOnFailure: true
+# Only one template will be created as requested
+gprTemplate:
+  name: "purple-test-e2e-template"
+  cluster: "worker-1"
+  priority: 200
+  exitDuration: "1h"
+  numGpuNodes: 1
+  enforceIdleTimeout: true
+  idleTimeoutDuration: "30m"
+  enableEviction: true
+  requeueOnFailure: true
+  # Hardware specification - override inventory auto-detection
+  gpuShape: "NVIDIA-A100-SXM4-40GB"
+  instanceType: "a2-highgpu-2g" # A100 compatible instance type (matches cluster inventory)
+  memoryPerGpu: 40 # A100 has 40GB memory
+  gpuPerNode: 2 # Number of A100 GPUs per node (matches cluster inventory)
 
 # ==========================================
 # Template Binding Configuration
 # ==========================================
-# This binds templates to the workspace and enables auto-GPR
+# This binds the single template to the workspace and enables auto-GPR
 templateBinding:
   enableAutoGpr: true
   clusters:
     - clusterName: "worker-1"
-      defaultTemplateName: "purple-high-performance-template"
+      defaultTemplateName: "purple-test-e2e-template"
       templates:
-        - "purple-high-performance-template"
-        - "purple-standard-template"
+        - "purple-test-e2e-template"
+
+# ==========================================
+# Auto GPR Test Configuration
+# ==========================================
+autoGprTest:
+  requestName: "auto-gpr-test-request"
+  exitDuration: "45m"
+  priority: 150
+  timeoutSeconds: 600 # 10 minutes to wait for GPR provisioning
+  monitoringIntervalSeconds: 15
 
 # ==========================================
 # Test Configuration
 # ==========================================
 test:
   validateCreation: true
-  runCleanup: false
-  timeoutSeconds: 300
+  validateTemplates: true
+  validateBinding: true
+  validateAutoGprCreation: true
+  validateGprStatus: true
+  generateReport: true
+  runCleanup: true
+  timeoutSeconds: 900 # 15 minutes total test timeout
 
 # ==========================================
-# Advanced Configuration (Optional)
+# Advanced Configuration
 # ==========================================
 advanced:
   # Retry configuration
@@ -73,6 +81,27 @@ advanced:
   strictValidation: true
   validateInventory: true
 
+  # Expected GPR states during lifecycle
+  expectedGprStates:
+    - "Pending"
+    - "Queued"
+    - "Provisioning"
+    - "Successful"
+
   # Output settings
   saveOutputs: true
-  outputDirectory: "autogpr_outputs"
+  outputDirectory: "test_outputs"
+  generateDetailedReport: true
+  timestampReports: true
+
+# ==========================================
+# Report Configuration
+# ==========================================
+reporting:
+  includeTimestamps: true
+  includeInventoryDetails: true
+  includeTemplateDetails: true
+  includeBindingDetails: true
+  includeGprLifecycle: true
+  saveToFile: true
+  printToConsole: true
