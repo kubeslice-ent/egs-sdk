@@ -77,7 +77,7 @@ For issues, feature requests, or questions, please visit the [GitHub Issues](htt
 
 ## Resources 📚
 
-- **Documentation**: [https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/](https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/)
+- **Documentation**: [SDK Documentation](https://docs.avesha.io/documentation/enterprise-egs/1.14.0/overview/)
 - **Source Code**: [https://github.com/kubeslice-ent/egs-sdk](https://github.com/kubeslice-ent/egs-sdk)
 - **Tracker**: [https://github.com/kubeslice-ent/egs-sdk/issues](https://github.com/kubeslice-ent/egs-sdk/issues)
 
