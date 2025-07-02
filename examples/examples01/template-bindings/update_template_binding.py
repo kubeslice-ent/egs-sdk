@@ -1,5 +1,3 @@
-# Binding should only be created for new workspace with no bindings available or else existing binding will be deleted.
-
 import os
 import egs
 import argparse
@@ -77,7 +75,7 @@ def template_exists(templates, template_name):
 if __name__ == "__main__" :
     # Set up command-line arguments
     parser = argparse.ArgumentParser(
-        description="Create template binding from YAML configuration"
+        description="Update template binding from YAML configuration"
     )
 
     parser.add_argument(
@@ -140,7 +138,7 @@ if __name__ == "__main__" :
                                 print(f"  - {name}")
                             raise ValueError(f"Template '{template}' does not exist. Available templates listed above.")
                         
-                # CHECK IF BINDING ALREADY EXISTS - 
+                # CHECK IF BINDING ALREADY EXISTS
                 workspace_name = binding.get("workspace_name")
                 
                 try:
@@ -149,19 +147,10 @@ if __name__ == "__main__" :
                         binding_name=workspace_name,
                         authenticated_session=auth
                     )
-                    print(f"Found existing binding for workspace '{workspace_name}', deleting first...")
-                    
-                    # Delete existing binding
-                    delete_binding = egs.delete_gpr_template_binding(
-                        binding_name=workspace_name,
-                        authenticated_session=auth
-                    )
-                    print('✅ Existing binding deleted successfully')
-                    # Wait a moment for deletion to complete
-                    time.sleep(2)
+                    print(f"Found existing binding for workspace '{workspace_name}'")
                     
                 except Exception as e:
-                    print(f"No existing binding found for workspace '{workspace_name}', proceeding to create new binding")
+                    print(f"No existing binding found for workspace '{workspace_name}', proceeding to update existing binding")
                 
                 transformed_clusters = []
                 for cluster in binding["clusters"]:
@@ -172,22 +161,22 @@ if __name__ == "__main__" :
                     }
                     transformed_clusters.append(transformed_cluster)
                 
-                # create template binding
+                # update template binding
                 enable_auto_gpr = binding.get("enable_auto_gpr", False)
-                print(f"Creating template binding with enable_auto_gpr: {enable_auto_gpr}")
+                print(f"Updating template binding with enable_auto_gpr: {enable_auto_gpr}")
                 
-                response = egs.create_gpr_template_binding(
+                response = egs.update_gpr_template_binding(
                     workspace_name=binding.get("workspace_name"),
                     clusters=transformed_clusters,
                     enable_auto_gpr=enable_auto_gpr,
                     authenticated_session=auth
                 )
                 
-                print(f"✅ Successfully created template binding for workspace: '{binding.get('workspace_name')}'")
+                print(f"✅ Successfully updated template binding for workspace '{binding.get('workspace_name')}'")
             
                 
             except Exception as e:
-                print(f"❌ Failed to create template binding '{binding.get('workspace_name', 'unnamed')}': {e}")
+                print(f"❌ Failed to update template binding '{binding.get('workspace_name', 'unnamed')}': {e}")
                 continue    
         
     except FileNotFoundError as e:
