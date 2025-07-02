@@ -1,0 +1,10 @@
+template_bindings:
+  - workspace_name: "baba-yaga"
+    clusters:
+      - cluster_name: "worker-1"
+        default_template_name: "wick"
+        templates:
+          # - "purple-test-20250702-160650"
+          - "wick"
+
+    enable_auto_gpr: false
