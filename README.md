@@ -49,7 +49,7 @@ pip install -e .
 Tests are available to ensure the SDK works as expected. To run tests:
 
 ```bash
-pytest
+EGS_ENDPOINT=<endpointUrl: e.g. http://172.18.255.202:8080> EGS_API_KEY=<api-key> pytest -vv
 ```
 
 ---
