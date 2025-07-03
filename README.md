@@ -8,7 +8,7 @@ The **Elastic GPU Service (EGS)** SDK provides tools and workflows for efficient
 ## Key Features 🚀
 
 - **Efficient GPU Scheduling**: Manage GPU resources across multiple users and clusters seamlessly.
-- **Pre-configured GPU Nodes and Pools**: Ready-to-use setups for fine-tuning jobs, enhancing GPU utilization and monetization.
+- **Pre-configured GPU Nodes and Pools**: Ready-to-use setups for fine-tuning jobs, enhancing GPU utilization, and monetization.
 - **Self-Service Portal**: Simplifies GPU resource management for a broader range of users.
 - **Premium Service Delivery**: Enables cloud providers to offer white-glove services to larger customers.
 
@@ -41,15 +41,11 @@ To clone the repository and set up the development environment:
 ```bash
 git clone https://github.com/kubeslice-ent/egs-sdk.git
 cd egs-sdk
-pip install -e .
 ```
 
-### Run Tests
-
-Tests are available to ensure the SDK works as expected. To run tests:
-
-```bash
-pytest
+Use the following command to install `egs-sdk` package:
+```
+pip install -e .
 ```
 
 ---
@@ -77,11 +73,11 @@ For issues, feature requests, or questions, please visit the [GitHub Issues](htt
 
 ## Resources 📚
 
-- **Documentation**: [SDK Documentation](https://docs.avesha.io/documentation/enterprise-egs/1.14.0/overview/)
+- **Documentation**: [SDK Documentation](https://docs.avesha.io/documentation/enterprise-egs/1.14.0/category/python-sdk-reference/)
 - **Source Code**: [https://github.com/kubeslice-ent/egs-sdk](https://github.com/kubeslice-ent/egs-sdk)
 - **Tracker**: [https://github.com/kubeslice-ent/egs-sdk/issues](https://github.com/kubeslice-ent/egs-sdk/issues)
 
 ---
 
-For more detailed information, refer to the [Elastic GPU Service Overview](https://docs.avesha.io/documentation/enterprise-egs/0.8.0/overview/)
+For more detailed information, refer to the [Elastic GPU Service Overview](https://docs.avesha.io/documentation/enterprise-egs/1.14.0/overview/)
 
