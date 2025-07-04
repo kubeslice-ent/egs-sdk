@@ -1,4 +1,5 @@
 from egs.util.string_util import serialize
+from typing import List, Optional
 
 class ListInventoryRequest(object):
     def __init__(self):
@@ -24,13 +25,13 @@ class Allocation(object):
             gprName: str,
             sliceName: str,
             totalGPUsAllocated: int,
-            allocationTimeStamp: AllocationTime,
+            allocationTimeStamp: dict,
             *args, **kwargs
     ):
         self.gpr_name = gprName
         self.slice_name = sliceName
         self.total_gpus_allocated = totalGPUsAllocated
-        self.allocation_timestamp = allocationTimeStamp
+        self.allocation_timestamp = AllocationTime(**allocationTimeStamp)
 
     def __str__(self):
         return serialize(self)
@@ -87,8 +88,8 @@ class Inventory(object):
             nodeHealth: str = None,
             gpuNodeStatus: str = None,
             cloud: str = None,
-            allocation: [Allocation] = None,
-            gpuSlicingProfile: [GpuSlicingProfile] = None,
+            allocation: Optional[List[dict]] = None,
+            gpuSlicingProfile: Optional[List[dict]] = None,
             *args, **kwargs
     ):
         self.gpu_node_name = gpuNodeName
@@ -105,8 +106,8 @@ class Inventory(object):
         self.node_health = nodeHealth
         self.gpu_node_status = gpuNodeStatus
         self.cloud = cloud
-        self.allocation = allocation
-        self.gpu_slicing_profile = gpuSlicingProfile
+        self.allocation = [Allocation(**a) for a in allocation] if allocation else None
+        self.gpu_slicing_profile = [GpuSlicingProfile(**gsp) for gsp in gpuSlicingProfile] if gpuSlicingProfile else None
 
     def __str__(self):
         return serialize(self)
@@ -115,20 +116,12 @@ class Inventory(object):
 class ListInventoryResponse(object):
     def __init__(
             self,
-            managedNodes: [Inventory],
-            unmanagedNodes: [Inventory],
+            managedNodes: List[dict],
+            unmanagedNodes: List[dict],
             *args, **kwargs):
-        m = []
-        for i in managedNodes:
-            m.append(Inventory(**i))
 
-        u = []
-        for i in unmanagedNodes:
-            u.append(Inventory(**i))
-        self.managed_nodes = m
-        self.unmanaged_nodes = u
-        # self.managed_nodes = managedNodes
-        # self.unmanaged_nodes = unmanagedNodes
-
+        self.managed_nodes = [Inventory(**mn) for mn in managedNodes]
+        self.unmanaged_nodes = [Inventory(**umn) for umn in unmanagedNodes]
+        
     def __str__(self):
         return serialize(self)
