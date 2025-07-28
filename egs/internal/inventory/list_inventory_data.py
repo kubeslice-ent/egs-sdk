@@ -1,5 +1,7 @@
-from egs.util.string_util import serialize
 from typing import List, Optional
+
+from egs.util.string_util import serialize
+
 
 class ListInventoryRequest(object):
     def __init__(self):
@@ -7,26 +9,23 @@ class ListInventoryRequest(object):
 
 
 class AllocationTime(object):
-    def __init__(
-            self,
-            seconds: str,
-            nanos: int,
-            *args, **kwargs
-    ):
+    def __init__(self, seconds: str, nanos: int, *args, **kwargs):
         self.seconds = seconds
         self.nanos = nanos
 
     def __str__(self):
         return serialize(self)
 
+
 class Allocation(object):
     def __init__(
-            self,
-            gprName: str,
-            sliceName: str,
-            totalGPUsAllocated: int,
-            allocationTimeStamp: dict,
-            *args, **kwargs
+        self,
+        gprName: str,
+        sliceName: str,
+        totalGPUsAllocated: int,
+        allocationTimeStamp: dict,
+        *args,
+        **kwargs
     ):
         self.gpr_name = gprName
         self.slice_name = sliceName
@@ -47,17 +46,19 @@ class Allocation(object):
 # GpusPerNode   int    `json:"gpusPerNode"`
 # }
 
+
 class GpuSlicingProfile(object):
     def __init__(
-            self,
-            profileName: str,
-            memory: str,
-            totalGpus: int,
-            deviceName: str,
-            availableGpus: int,
-            memoryPerGpu: str,
-            gpusPerNode: int,
-            *args, **kwargs
+        self,
+        profileName: str,
+        memory: str,
+        totalGpus: int,
+        deviceName: str,
+        availableGpus: int,
+        memoryPerGpu: str,
+        gpusPerNode: int,
+        *args,
+        **kwargs
     ):
         self.profile_name = profileName
         self.memory = memory
@@ -73,24 +74,26 @@ class GpuSlicingProfile(object):
 
 class Inventory(object):
     def __init__(
-            self,
-            gpuNodeName: str = None,
-            gpuShape: str = None,
-            gpuModelName: str = None,
-            instanceType: str = None,
-            clusterName: str = None,
-            memory: int = None,
-            gpuCount: int = None,
-            gpuTempThreshold: str = None,
-            gpuPowerThreshold: str = None,
-            cloudProvider: str = None,
-            region: str = None,
-            nodeHealth: str = None,
-            gpuNodeStatus: str = None,
-            cloud: str = None,
-            allocation: Optional[List[dict]] = None,
-            gpuSlicingProfile: Optional[List[dict]] = None,
-            *args, **kwargs
+        self,
+        gpuNodeName: str = None,
+        gpuShape: str = None,
+        gpuModelName: str = None,
+        instanceType: str = None,
+        clusterName: str = None,
+        memory: int = None,
+        gpuCount: int = None,
+        availableGpus: int = 0,
+        gpuTempThreshold: str = None,
+        gpuPowerThreshold: str = None,
+        cloudProvider: str = None,
+        region: str = None,
+        nodeHealth: str = None,
+        gpuNodeStatus: str = None,
+        cloud: str = None,
+        allocation: Optional[List[dict]] = None,
+        gpuSlicingProfile: Optional[List[dict]] = None,
+        *args,
+        **kwargs
     ):
         self.gpu_node_name = gpuNodeName
         self.gpu_shape = gpuModelName
@@ -99,6 +102,7 @@ class Inventory(object):
         self.cluster_name = clusterName
         self.memory = memory
         self.gpu_count = gpuCount
+        self.availableGpus = availableGpus
         self.gpu_temp_threshold = gpuTempThreshold
         self.gpu_power_threshold = gpuPowerThreshold
         self.cloud_provider = cloudProvider
@@ -107,7 +111,11 @@ class Inventory(object):
         self.gpu_node_status = gpuNodeStatus
         self.cloud = cloud
         self.allocation = [Allocation(**a) for a in allocation] if allocation else None
-        self.gpu_slicing_profile = [GpuSlicingProfile(**gsp) for gsp in gpuSlicingProfile] if gpuSlicingProfile else None
+        self.gpu_slicing_profile = (
+            [GpuSlicingProfile(**gsp) for gsp in gpuSlicingProfile]
+            if gpuSlicingProfile
+            else None
+        )
 
     def __str__(self):
         return serialize(self)
@@ -115,13 +123,11 @@ class Inventory(object):
 
 class ListInventoryResponse(object):
     def __init__(
-            self,
-            managedNodes: List[dict],
-            unmanagedNodes: List[dict],
-            *args, **kwargs):
+        self, managedNodes: List[dict], unmanagedNodes: List[dict], *args, **kwargs
+    ):
 
         self.managed_nodes = [Inventory(**mn) for mn in managedNodes]
         self.unmanaged_nodes = [Inventory(**umn) for umn in unmanagedNodes]
-        
+
     def __str__(self):
         return serialize(self)
