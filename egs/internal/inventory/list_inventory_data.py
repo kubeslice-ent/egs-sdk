@@ -82,7 +82,7 @@ class Inventory(object):
         clusterName: str = None,
         memory: int = None,
         gpuCount: int = None,
-        availableGpus: int = 0,
+        availableGPUs: int = 0,
         gpuTempThreshold: str = None,
         gpuPowerThreshold: str = None,
         cloudProvider: str = None,
@@ -102,7 +102,7 @@ class Inventory(object):
         self.cluster_name = clusterName
         self.memory = memory
         self.gpu_count = gpuCount
-        self.availableGpus = availableGpus
+        self.availableGPUs = availableGPUs
         self.gpu_temp_threshold = gpuTempThreshold
         self.gpu_power_threshold = gpuPowerThreshold
         self.cloud_provider = cloudProvider
