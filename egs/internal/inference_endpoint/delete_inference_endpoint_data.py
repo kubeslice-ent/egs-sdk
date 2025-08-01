@@ -1,10 +1,8 @@
 from egs.util.string_util import serialize
 
+
 class DeleteInferenceEndpointRequest(object):
-    def __init__(self,
-                 endpoint_name: str,
-                 workspace_name: str,
-                 cluster_name: str):
+    def __init__(self, endpoint_name: str, workspace_name: str, cluster_name: str):
         self.endpoint = endpoint_name
         self.workspace = workspace_name
         self.cluster = cluster_name
@@ -12,9 +10,10 @@ class DeleteInferenceEndpointRequest(object):
     def __str__(self):
         return serialize(self)
 
+
 class DeleteInferenceEndpointResponse(object):
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, endpoint: str, *args, **kwargs):
+        self.endpoint = endpoint
 
     def __str__(self):
         return serialize(self)
