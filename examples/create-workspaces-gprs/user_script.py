@@ -3,6 +3,7 @@ import subprocess
 import time
 import json
 import requests
+import os
 
 def ask_to_continue(step):
     response = input(f"Do you want to continue to the next step: {step}? (yes/no): ")
@@ -15,9 +16,13 @@ def ask_to_continue(step):
 def authenticate(ENDPOINT, API_KEY):
     # ask_to_continue("Authenticate with EGS")
     print("Authenticating with EGS...")
-    auth = egs.authenticate(endpoint=ENDPOINT, api_key=API_KEY)
-    print("Authentication successful.")
-    return auth
+    try:
+        auth = egs.authenticate(endpoint=ENDPOINT, api_key=API_KEY)
+        print("Authentication successful.")
+        return auth
+    except Exception as e:
+        print(f"Authentication failed: {e}")
+        raise
 
 # Step 2: Create manual GPR requests for slices
 def create_gpr_requests(auth, workspace_name, slices, CLUSTER_NAME):
@@ -26,25 +31,44 @@ def create_gpr_requests(auth, workspace_name, slices, CLUSTER_NAME):
         for i in range(1):
             print(f"Creating GPR request {request_name}_{i+1} for request '{request_name}' with priority '{priority}'...")
 
-            inventory = egs.inventory(authenticated_session=auth).__str__()
-            # convert string to json
-            inventory = json.loads(inventory)
-            print(f"Inventory retrieved successfully.")
-            
-            print(json.dumps(inventory, indent=4))
+            try:
+                inventory = egs.inventory(authenticated_session=auth).__str__()
+                # convert string to json
+                inventory = json.loads(inventory)
+                print(f"Inventory retrieved successfully.")
+                
+                print(json.dumps(inventory, indent=4))
 
-            print(inventory["managed_nodes"][0]["memory"], inventory["managed_nodes"][0]["instance_type"], inventory["managed_nodes"][0]["gpu_shape"])
-            # print all the inventory items that are used in the GPR request
-            print(inventory["managed_nodes"][0]["memory"], inventory["managed_nodes"][0]["instance_type"], inventory["managed_nodes"][0]["gpu_shape"])
+                if not inventory.get("managed_nodes") or len(inventory["managed_nodes"]) == 0:
+                    print("No managed nodes found in inventory. Skipping GPR creation.")
+                    continue
 
-            request_name = f"{request_name}_{i+1}"
-            gpu_request_id = egs.request_gpu(request_name=request_name, workspace_name=workspace_name, cluster_name=CLUSTER_NAME[0], node_count=1, gpu_per_node_count=1, memory_per_gpu=int(inventory["managed_nodes"][0]["memory"]), instance_type=inventory["managed_nodes"][0]["instance_type"], gpu_shape=inventory["managed_nodes"][0]["gpu_shape"], exit_duration="0d0h3m", priority=priority, authenticated_session=auth)
+                print(inventory["managed_nodes"][0]["memory"], inventory["managed_nodes"][0]["instance_type"], inventory["managed_nodes"][0]["gpu_shape"])
+                # print all the inventory items that are used in the GPR request
+                print(inventory["managed_nodes"][0]["memory"], inventory["managed_nodes"][0]["instance_type"], inventory["managed_nodes"][0]["gpu_shape"])
 
-            print(f"GPR request {request_name}_{i+1} created successfully with GPU request ID '{gpu_request_id}'.")
+                request_name = f"{request_name}_{i+1}"
+                gpu_request_id = egs.request_gpu(
+                    request_name=request_name, 
+                    workspace_name=workspace_name, 
+                    cluster_name=CLUSTER_NAME[0], 
+                    node_count=1, 
+                    gpu_per_node_count=1, 
+                    memory_per_gpu=int(inventory["managed_nodes"][0]["memory"]), 
+                    instance_type=inventory["managed_nodes"][0]["instance_type"], 
+                    gpu_shape=inventory["managed_nodes"][0]["gpu_shape"], 
+                    exit_duration="0d0h10m", 
+                    priority=priority, 
+                    authenticated_session=auth
+                )
 
-            print(f"Waiting for 10 seconds before creating the next GPR request...")
-            time.sleep(10)  # To avoid overwhelming the API
+                print(f"GPR request {request_name}_{i+1} created successfully with GPU request ID '{gpu_request_id}'.")
 
+                print(f"Waiting for 10 seconds before creating the next GPR request...")
+                time.sleep(10)  # To avoid overwhelming the API
+            except Exception as e:
+                print(f"Error creating GPR request {request_name}_{i+1}: {e}")
+                continue
 
 # def delete_gpr_requests(auth, workspace_name):
 #     # ask_to_continue("Delete GPR requests")
@@ -81,61 +105,108 @@ def main():
         WORKSPACE_NAME = config["WORKSPACE_NAME"]
         CLUSTER_NAME = config["CLUSTER_NAME"]
 
-        # # Read user api key from user folder
-        # with open(f"./{team}/api-token.txt", "r") as file:
-        #     USER_API_KEY = file.read().strip()
+        # Read user api key from user folder
+        api_token_file = f"./{team}/api-token.txt"
+        if not os.path.exists(api_token_file):
+            print(f"Warning: API token file '{api_token_file}' not found. Skipping team '{team}'.")
+            print("Please ensure the admin script has been run and the API token has been added to the file.")
+            continue
 
-        # # Placeholder for any further processing per team
-        # print(f"Completed processing API-Token for team: {team}\n{'='*50}")
+        try:
+            with open(api_token_file, "r") as file:
+                USER_API_KEY = file.read().strip()
+            
+            if not USER_API_KEY:
+                print(f"Warning: API token file '{api_token_file}' is empty. Skipping team '{team}'.")
+                print("Please add a valid API token to the file.")
+                continue
+        except Exception as e:
+            print(f"Error reading API token file '{api_token_file}': {e}")
+            continue
 
-        # user_auth = authenticate(ENDPOINT=ENDPOINT, API_KEY=USER_API_KEY)
+        # Placeholder for any further processing per team
+        print(f"Completed processing API-Token for team: {team}\n{'='*50}")
 
-        # # Define slices and their GPU shapes
-        # slices = {
-        #     "low priority": 1,
-        #     "important fine tuning": 101,
-        #     "EMERGENCY": 201
-        # }
+        try:
+            user_auth = authenticate(ENDPOINT=ENDPOINT, API_KEY=USER_API_KEY)
+        except Exception as e:
+            print(f"Failed to authenticate for team '{team}': {e}")
+            continue
 
-        # print("Installing GPU workloads...")
+        # Define slices and their GPU shapes
+        slices = {
+            # "important fine tuning": 101,
+            "EMERGENCY": 201
+            # "critical simulation": 201
+        }
 
-        # subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./llm-deployment.yaml"], check=True)
+        print("Installing GPU workloads...")
 
-        # subprocess.run(["kubectl", "--kubeconfig", f"./{team}/{team}-kubeconfig.yaml", "apply", "-f", f"./service.yaml"], check=True)
+        # Check if kubeconfig file exists
+        kubeconfig_file = f"./{team}/{team}-kubeconfig.yaml"
+        if not os.path.exists(kubeconfig_file):
+            print(f"Warning: Kubeconfig file '{kubeconfig_file}' not found. Skipping kubectl operations for team '{team}'.")
+            continue
 
-        # # # sleep for 60 seconds
-        # # print("Waiting for 60 seconds ...")
-        # # time.sleep(60)
+        try:
+            subprocess.run(["kubectl", "--kubeconfig", kubeconfig_file, "--insecure-skip-tls-verify", "apply", "-f", f"./llm-deployment.yaml"], check=True)
+            print("LLM deployment applied successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error applying LLM deployment: {e}")
+            continue
 
-        # print("Creating GPR requests...")
-        # # Create GPR requests for each slice
-        # create_gpr_requests(user_auth, WORKSPACE_NAME, slices, CLUSTER_NAME)
-        
-        # print("GPU workload automation script completed successfully.")
-        # # delete_gpr_requests(user_auth, WORKSPACE_NAME)
+        try:
+            subprocess.run(["kubectl", "--kubeconfig", kubeconfig_file, "--insecure-skip-tls-verify", "apply", "-f", f"./service.yaml"], check=True)
+            print("Service applied successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error applying service: {e}")
+            continue
 
-        # # Add sleep for 60 seconds to allow the service to be ready
+        # # sleep for 60 seconds
         # print("Waiting for 60 seconds ...")
         # time.sleep(60)
 
+        print("Creating GPR requests...")
+        # Create GPR requests for each slice
+        create_gpr_requests(user_auth, WORKSPACE_NAME, slices, CLUSTER_NAME)
+        
+        print("GPU workload automation script completed successfully.")
+        # delete_gpr_requests(user_auth, WORKSPACE_NAME)
+
+        # Add sleep for 60 seconds to allow the service to be ready
+        print("Waiting for 60 seconds for service to be ready...")
+        time.sleep(60)
+
         # Create load against the service
-        print("Creating load against the service...")
-        command = ["kubectl", "get", "svc", "llm-service", "-o", "jsonpath=\"{.status.loadBalancer.ingress[0].ip}\"", "-n", team]
-        print("Running command:", " ".join(command))
+        print("Preparing curl command to load the service...")
 
-        external_ip = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip().replace('"', '')
-        url = f"http://{external_ip}/generate"
-        print("url:", url)
-        headers = {"Content-Type": "application/json"}
-        data = {"input": "What is Kubernetes?"}
+        try:
+            command = [
+                "kubectl", "--kubeconfig", kubeconfig_file,
+                "--insecure-skip-tls-verify",
+                "get", "svc", "llm-service",
+                "-o", "jsonpath=\"{.status.loadBalancer.ingress[0].ip}\"",
+                "-n", team
+            ]
+            print("Running command:", " ".join(command))
 
-        for _ in range(3600):
-            try:
-                response = requests.post(url, json=data, headers=headers)
-                print(f"Response: {response.status_code}, {response.text}")
-            except requests.RequestException as e:
-                print(f"Error: {e}")
-            time.sleep(1)
+            external_ip = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip().replace('"', '')
+
+            if not external_ip:
+                print("Warning: No external IP found for the service.")
+            else:
+                url = f"http://{external_ip}/generate"
+                curl_cmd = f"""curl -X POST {url} \\
+        -H "Content-Type: application/json" \\
+        -d '{{"input": "What is Kubernetes?"}}'"""
+                print("\nRun the following curl command to generate load:")
+                print(curl_cmd)
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error getting service external IP: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+
 
 
 if __name__ == "__main__":
