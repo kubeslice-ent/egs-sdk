@@ -1,14 +1,16 @@
 from egs.exceptions import Unauthorized
 
 global _authenticated_session
-from egs import authentication
-from egs import inventory_operations
-from egs import workspace
-from egs import gpu_requests
-from egs import inference_endpoint
-from egs import api_key
-from egs import gpr_template
-from egs import gpr_template_binding
+from egs import (
+    api_key,
+    authentication,
+    gpr_template,
+    gpr_template_binding,
+    gpu_requests,
+    inference_endpoint,
+    inventory_operations,
+    workspace,
+)
 
 authenticate = authentication.authenticate
 
@@ -25,6 +27,7 @@ workspace_inventory = inventory_operations.workspace_inventory
 inventory = inventory_operations.inventory
 
 request_gpu = gpu_requests.request_gpu
+request_gpu_with_auto_selection = gpu_requests.request_gpu_with_auto_selection
 cancel_gpu_request = gpu_requests.cancel_gpu_request
 update_gpu_request_priority = gpu_requests.update_gpu_request_priority
 update_gpu_request_name = gpu_requests.update_gpu_request_name
@@ -34,7 +37,9 @@ gpu_request_status_for_workspace = gpu_requests.gpu_request_status_for_workspace
 
 list_inference_endpoint = inference_endpoint.list_inference_endpoints
 create_inference_endpoint = inference_endpoint.create_inference_endpoint
-create_inference_endpoint_with_custom_model_spec = inference_endpoint.create_inference_endpoint_with_custom_model_spec
+create_inference_endpoint_with_custom_model_spec = (
+    inference_endpoint.create_inference_endpoint_with_custom_model_spec
+)
 describe_inference_endpoint = inference_endpoint.describe_inference_endpoint
 delete_inference_endpoint = inference_endpoint.delete_inference_endpoint
 
@@ -49,6 +54,7 @@ get_gpr_template_binding = gpr_template_binding.get_gpr_template_binding
 list_gpr_template_bindings = gpr_template_binding.list_gpr_template_bindings
 update_gpr_template_binding = gpr_template_binding.update_gpr_template_binding
 delete_gpr_template_binding = gpr_template_binding.delete_gpr_template_binding
+
 
 def update_global_session(session):
     global _authenticated_session
@@ -65,7 +71,7 @@ def get_authenticated_session(authenticated_session):
     if authenticated_session is not None:
         auth = authenticated_session
     if auth is None:
-        raise Unauthorized('No authenticated session found')
+        raise Unauthorized("No authenticated session found")
     return auth
 
 
