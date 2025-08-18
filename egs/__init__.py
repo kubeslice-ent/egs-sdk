@@ -28,6 +28,9 @@ inventory = inventory_operations.inventory
 
 request_gpu = gpu_requests.request_gpu
 request_gpu_with_auto_selection = gpu_requests.request_gpu_with_auto_selection
+request_gpu_with_auto_gpu_selection = gpu_requests.request_gpu_with_auto_gpu_selection
+request_gpu_with_auto_cluster = gpu_requests.request_gpu_with_auto_cluster
+request_gpu_with_manual_selection = gpu_requests.request_gpu_with_manual_selection
 cancel_gpu_request = gpu_requests.cancel_gpu_request
 update_gpu_request_priority = gpu_requests.update_gpu_request_priority
 update_gpu_request_name = gpu_requests.update_gpu_request_name

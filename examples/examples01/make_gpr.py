@@ -1,7 +1,9 @@
 import argparse
 import os
 import sys
+from typing import List
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 import egs
 from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
 
@@ -18,7 +20,10 @@ def get_env_variable(env_name):
 
 
 def workspace_and_cluster_exists(
-    response: ListWorkspacesResponse, workspace_name: str, cluster_name: str
+    response: ListWorkspacesResponse,
+    workspace_name: str,
+    preferred_clusters: List[str],
+    enable_auto_cluster_selection: bool,
 ) -> bool:
     """
     Check if a workspace with the given name exists and
@@ -31,13 +36,21 @@ def workspace_and_cluster_exists(
     """
     for workspace in response.workspaces:
         if workspace.name == workspace_name:
-            if cluster_name in workspace.clusters:
+            if enable_auto_cluster_selection:
                 return True
             else:
-                print(
-                    f"Workspace '{workspace_name}' exists, but cluster '{cluster_name}' does not."
-                )
-                return False
+                missingClusters = [
+                    cluster
+                    for cluster in preferred_clusters
+                    if cluster not in workspace.clusters
+                ]
+                if len(missingClusters) == 0:
+                    return True
+                else:
+                    print(
+                        f"Workspace '{workspace_name}' exists, but cluster '{missingClusters}' does not."
+                    )
+                    return False
     print(f"Workspace '{workspace_name}' does not exist.")
     return False
 
@@ -48,12 +61,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make GPR Options")
 
     parser.add_argument("--request_name", required=True, help="Name of the GPU request")
-    parser.add_argument("--cluster_name", required=True, help="Name of the Cluster")
+    parser.add_argument("--cluster_name", help="Name of the Cluster")
     parser.add_argument(
         "--workspace_name", required=True, help="Name of workspace_name"
     )
     parser.add_argument(
         "--priority", required=True, type=int, help="The priority of the request."
+    )
+    parser.add_argument(
+        "--memory_per_gpu", required=True, type=int, help="Memory per GPU."
     )
     parser.add_argument(
         "--exit_duration",
@@ -70,9 +86,19 @@ if __name__ == "__main__":
     )
     parser.add_argument("--enable_eviction", help="Enable eviction of the GPU")
     parser.add_argument("--requeue_on_failure", help="Requeue the request on failure")
-    parser.add_argument("--enable_auto_gpu_selection", action="store_true", help="Enable auto GPU selection")
-    parser.add_argument("--enable_auto_cluster_selection", action="store_true", help="Enable auto cluster selection")
-    parser.add_argument("--prefered_cluster", nargs="+", help="List of preferred clusters")
+    parser.add_argument(
+        "--enable_auto_gpu_selection",
+        action="store_true",
+        help="Enable auto GPU selection",
+    )
+    parser.add_argument(
+        "--enable_auto_cluster_selection",
+        action="store_true",
+        help="Enable auto cluster selection",
+    )
+    parser.add_argument(
+        "--preferred_clusters", nargs="+", help="List of preferred clusters"
+    )
 
     args = parser.parse_args()
 
@@ -84,16 +110,32 @@ if __name__ == "__main__":
             sdk_default=False,
         )
 
-        # print(auth)
         # Get the List of Workspaces
         workspaces = egs.list_workspaces(authenticated_session=auth)
 
-        # Check If Workspace exist for the Cluster
-        if workspace_and_cluster_exists(
-            workspaces, args.workspace_name, args.cluster_name
+        # Validate that either cluster_name or preferred_clusters is provided when auto cluster selection is disabled
+        if (
+            not args.enable_auto_cluster_selection
+            and not args.enable_auto_gpu_selection
+            and args.cluster_name == ""
         ):
             print(
-                f"Workspace {args.workspace_name} exists in {args.cluster_name} cluster"
+                "Error: cluster_name is required when auto cluster selection is disabled"
+            )
+            sys.exit(1)
+
+        preferred_clusters: List[str] = []
+        if args.cluster_name:
+            preferred_clusters.append(args.cluster_name)
+        # Check If Workspace exist for the Cluster
+        if workspace_and_cluster_exists(
+            workspaces,
+            args.workspace_name,
+            preferred_clusters,
+            args.enable_auto_cluster_selection,
+        ):
+            print(
+                f"Workspace {args.workspace_name} exists in {preferred_clusters} clusters"
             )
 
             # Get the Inventory
@@ -112,31 +154,41 @@ if __name__ == "__main__":
                 if len(matching_items):
                     cur_inventory = matching_items[0]
 
+            instance_type: str = cur_inventory.instance_type
+            gpu_shape: str = cur_inventory.gpu_shape
+            if args.enable_auto_gpu_selection:
+                instance_type = ""
+                gpu_shape = ""
+
+            if not args.enable_auto_cluster_selection:
+                if args.preferred_clusters:
+                    preferred_clusters.append(args.preferred_clusters)
+
             gpu_request_id = egs.request_gpu(
                 request_name=args.request_name,
                 workspace_name=args.workspace_name,
-                cluster_name=args.cluster_name,
+                cluster_name=args.cluster_name,  # cluster_name is deprecated
                 node_count=1,
                 gpu_per_node_count=cur_inventory.gpu_per_node,
-                instance_type=cur_inventory.instance_type,
-                memory_per_gpu=cur_inventory.memory_per_gpu,
-                gpu_shape=cur_inventory.gpu_shape,
+                instance_type=instance_type,
+                memory_per_gpu=args.memory_per_gpu,
+                gpu_shape=gpu_shape,
                 exit_duration=args.exit_duration,
                 priority=args.priority,
                 idle_timeout_duration=args.idle_timeout_duration,
                 enforce_idle_timeout=args.enforce_idle_timeout == "true",
                 enable_eviction=args.enable_eviction == "true",
                 requeue_on_failure=args.requeue_on_failure == "true",
-                enable_auto_gpu_auto_selection=args.enable_auto_gpu_selection,
+                enable_auto_gpu_selection=args.enable_auto_gpu_selection,
                 enable_auto_cluster_selection=args.enable_auto_cluster_selection,
-                prefered_cluster=args.prefered_cluster,
+                preferred_clusters=preferred_clusters,
                 authenticated_session=auth,
             )
 
             print("GPR Created Successfully with gpu_request_id: ", gpu_request_id)
         else:
             print(
-                f"Workspace {args.workspace_name} doesnot exists in {args.cluster_name} cluster"
+                f"Workspace {args.workspace_name} does not exist in the specified clusters"
             )
             sys.exit(1)  # Exit with a non-zero status to indicate an error
 

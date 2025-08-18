@@ -15,6 +15,7 @@ from egs.internal.gpr.update_gpr_priority_data import UpdateGprPriorityRequest
 
 
 def request_gpu(
+    *,
     request_name: str,
     workspace_name: str,
     node_count: int,
@@ -61,6 +62,7 @@ def request_gpu(
 
 
 def request_gpu_with_auto_selection(
+    *,
     request_name: str,
     workspace_name: str,
     node_count: int,
@@ -93,6 +95,144 @@ def request_gpu_with_auto_selection(
         preferred_clusters=None,
         instance_type="",
         gpu_shape="",
+    )
+    api_response = auth.client.invoke_sdk_operation("/api/v1/gpr", "POST", req)
+    if api_response.status_code != 200:
+        raise UnhandledException(api_response)
+    return CreateGprResponse(**api_response.data).gpr_id
+
+
+def request_gpu_with_auto_gpu_selection(
+    *,
+    request_name: str,
+    workspace_name: str,
+    node_count: int,
+    gpu_per_node_count: int,
+    memory_per_gpu: int,
+    exit_duration: str,
+    priority: int,
+    idle_timeout_duration: str,
+    enforce_idle_timeout: bool,
+    preferred_clusters: List[str],  # Required when auto cluster selection is disabled
+    requeue_on_failure: Optional[bool] = None,
+    enable_eviction: Optional[bool] = None,
+    authenticated_session: Optional[AuthenticatedSession] = None,
+) -> str:
+    """
+    Request GPU with auto GPU selection only (manual cluster selection)
+    """
+    auth = egs.get_authenticated_session(authenticated_session)
+    req = CreateGprRequest(
+        request_name=request_name,
+        workspace_name=workspace_name,
+        cluster_name="",
+        node_count=node_count,
+        preferred_clusters=preferred_clusters,
+        enable_auto_cluster_selection=False,
+        enable_auto_gpu_selection=True,
+        gpu_per_node_count=gpu_per_node_count,
+        memory_per_gpu=memory_per_gpu,
+        instance_type="",
+        gpu_shape="",
+        exit_duration=exit_duration,
+        priority=priority,
+        idle_timeout_duration=idle_timeout_duration,
+        enforce_idle_timeout=enforce_idle_timeout,
+        enable_eviction=enable_eviction,
+        requeue_on_failure=requeue_on_failure,
+    )
+    api_response = auth.client.invoke_sdk_operation("/api/v1/gpr", "POST", req)
+    if api_response.status_code != 200:
+        raise UnhandledException(api_response)
+    return CreateGprResponse(**api_response.data).gpr_id
+
+
+def request_gpu_with_auto_cluster(
+    *,
+    request_name: str,
+    workspace_name: str,
+    node_count: int,
+    gpu_per_node_count: int,
+    memory_per_gpu: int,
+    exit_duration: str,
+    priority: int,
+    idle_timeout_duration: str,
+    enforce_idle_timeout: bool,
+    instance_type: str,  # Required when auto GPU selection is disabled
+    gpu_shape: str,  # Required when auto GPU selection is disabled
+    requeue_on_failure: Optional[bool] = None,
+    enable_eviction: Optional[bool] = None,
+    authenticated_session: Optional[AuthenticatedSession] = None,
+) -> str:
+    """
+    Request GPU with auto cluster selection only (manual GPU selection)
+    """
+    auth = egs.get_authenticated_session(authenticated_session)
+    req = CreateGprRequest(
+        request_name=request_name,
+        workspace_name=workspace_name,
+        cluster_name="",
+        node_count=node_count,
+        preferred_clusters=None,
+        enable_auto_cluster_selection=True,
+        enable_auto_gpu_selection=False,
+        gpu_per_node_count=gpu_per_node_count,
+        memory_per_gpu=memory_per_gpu,
+        instance_type=instance_type,
+        gpu_shape=gpu_shape,
+        exit_duration=exit_duration,
+        priority=priority,
+        idle_timeout_duration=idle_timeout_duration,
+        enforce_idle_timeout=enforce_idle_timeout,
+        enable_eviction=enable_eviction,
+        requeue_on_failure=requeue_on_failure,
+    )
+    api_response = auth.client.invoke_sdk_operation("/api/v1/gpr", "POST", req)
+    if api_response.status_code != 200:
+        raise UnhandledException(api_response)
+    return CreateGprResponse(**api_response.data).gpr_id
+
+
+def request_gpu_with_manual_selection(
+    *,
+    request_name: str,
+    workspace_name: str,
+    node_count: int,
+    gpu_per_node_count: int,
+    memory_per_gpu: int,
+    exit_duration: str,
+    priority: int,
+    idle_timeout_duration: str,
+    enforce_idle_timeout: bool,
+    cluster_name: str,  # Required when auto cluster selection is disabled
+    instance_type: str,  # Required when auto GPU selection is disabled
+    gpu_shape: str,  # Required when auto GPU selection is disabled
+    requeue_on_failure: Optional[bool] = None,
+    enable_eviction: Optional[bool] = None,
+    authenticated_session: Optional[AuthenticatedSession] = None,
+) -> str:
+    """
+    Request GPU with both auto GPU and auto cluster selection disabled (manual selection)
+    """
+    auth = egs.get_authenticated_session(authenticated_session)
+    req = CreateGprRequest(
+        request_name=request_name,
+        workspace_name=workspace_name,
+        cluster_name=cluster_name,
+        node_count=node_count,
+        preferred_clusters=[cluster_name],  # Auto-populate from cluster_name
+        enable_auto_cluster_selection=False,
+        enable_auto_gpu_selection=False,
+        gpu_per_node_count=gpu_per_node_count,
+        memory_per_gpu=memory_per_gpu,
+        instance_type=instance_type,
+        gpu_shape=gpu_shape,
+        exit_duration=exit_duration,
+        priority=priority,
+        idle_timeout_duration=idle_timeout_duration,
+        enforce_idle_timeout=enforce_idle_timeout,
+        enable_eviction=enable_eviction,
+        requeue_on_failure=requeue_on_failure,
     )
     api_response = auth.client.invoke_sdk_operation("/api/v1/gpr", "POST", req)
     if api_response.status_code != 200:
