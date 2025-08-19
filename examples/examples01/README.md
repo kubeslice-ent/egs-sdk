@@ -73,6 +73,39 @@ To create workspaces based on the configuration file, run:
 python create_workspace.py --config workspace_config.yaml
 ```
 
+## Workload Deployment
+
+### GPU Workload Deployment
+The `workload_deployment/` folder contains scripts and manifests for deploying GPU workloads on EGS clusters.
+
+**Main Script:** `workload_deployment/deploy_gpu_workload.py`
+
+**Usage:**
+```bash
+python workload_deployment/deploy_gpu_workload.py --workspace "tezz-slice" --cluster "worker-1" --manifest "workload_deployment/deploy.yaml" --namespace "default"
+```
+
+**Features:**
+- Downloads kubeconfig for the specified workspace and cluster
+- Creates GPR (GPU Request) with auto GPU selection and manual cluster selection
+- Initializes Kubernetes client using the downloaded kubeconfig
+- Loads deployment manifest from YAML file
+- Creates deployment with proper resource configuration
+- Supports any Kubernetes deployment manifest
+
+**Required Arguments:**
+- `--workspace`: Workspace name
+- `--cluster`: Cluster name  
+- `--manifest`: Path to deployment YAML manifest file
+- `--namespace`: Namespace for deployment
+
+**Example:**
+```bash
+python workload_deployment/deploy_gpu_workload.py --workspace "test1" --cluster "worker-1" --manifest "workload_deployment/deploy.yaml" --namespace "default"
+```
+
+**See:** `workload_deployment/README.md` for detailed documentation.
+
 ## GPR
 
 ### Create a GPR

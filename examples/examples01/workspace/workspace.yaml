@@ -1,0 +1,12 @@
+projectname: "avesha"
+workspaces:
+  - name: "payload"
+    namespaces: 
+      - "nim"
+      - "locust"
+    username: "admin-1"
+    email: "admin1@avesha.io"
+    clusters:
+      - "worker-1"
+      - "worker-2"
+    apiKeyValidity: "2026-12-31"

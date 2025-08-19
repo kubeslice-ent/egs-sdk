@@ -1,57 +1,29 @@
 """
-Simple script to create GPR with auto GPU selection enabled and manual cluster selection.
+Simple script to create GPR with auto cluster selection enabled and manual GPU selection.
+
+Usage Example:
+python examples/examples01/gpu_request/make_gpr_with_auto_cluster.py \
+  --request_name "color-gpr-001" \
+  --workspace_name "color" \
+  --priority 100 \
+  --memory_per_gpu 22 \
+  --exit_duration "1h" \
+  --instance_type "VM.GPU.A10.2" \
+  --gpu_shape "NVIDIA-A10"
 """
 
 import argparse
 import os
 import sys
-from typing import List
 
-# Add the project root to Python path
-sys.path.insert(
-    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 import egs
-from egs.gpu_requests import request_gpu_with_auto_gpu_selection
-from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
-
-
-def workspace_and_cluster_exists(
-    response: ListWorkspacesResponse,
-    workspace_name: str,
-    preferred_clusters: List[str],
-) -> bool:
-    """
-    Check if a workspace with the given name exists and
-    if the cluster name exists within its clusters.
-
-    :param response: A ListWorkspacesResponse object.
-    :param workspace_name: The name of the workspace to check for.
-    :param cluster_name: The name of the cluster to check for within the workspace.
-    :return: True if both the workspace and the cluster exist, False otherwise.
-    """
-    for workspace in response.workspaces:
-        if workspace.name == workspace_name:
-            missingClusters = [
-                cluster
-                for cluster in preferred_clusters
-                if cluster not in workspace.clusters
-            ]
-            if len(missingClusters) == 0:
-                return True
-            else:
-                print(
-                    f"Workspace '{workspace_name}' exists, but cluster '{missingClusters}' does not."
-                )
-                return False
-    print(f"Workspace '{workspace_name}' does not exist.")
-    return False
+from egs.gpu_requests import request_gpu_with_auto_cluster
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Create GPR with auto GPU selection enabled and manual cluster selection"
+        description="Create GPR with auto cluster selection enabled and manual GPU selection"
     )
 
     # Required arguments
@@ -70,11 +42,12 @@ def main():
         "--exit_duration", required=True, help="Exit duration (e.g., '1h', '30m')"
     )
     parser.add_argument(
-        "--preferred_clusters",
-        required=True,
-        nargs="+",
-        help="List of preferred clusters",
+        "--instance_type", required=True, help="Instance type (e.g., 'VM.GPU.A10.2')"
     )
+    parser.add_argument(
+        "--gpu_shape", required=True, help="GPU shape (e.g., 'NVIDIA-A10')"
+    )
+
     # Optional arguments with defaults
     parser.add_argument(
         "--node_count", type=int, default=1, help="Number of nodes (default: 1)"
@@ -127,18 +100,24 @@ def main():
         print(f"Checking if workspace '{args.workspace_name}' exists...")
         workspaces = egs.list_workspaces(authenticated_session=auth)
 
-        if not workspace_and_cluster_exists(
-            workspaces, args.workspace_name, args.preferred_clusters or []
-        ):
-            print(f"Error: Workspace or clusters  does not exist.")
+        workspace_exists = False
+        for workspace in workspaces.workspaces:
+            if workspace.name == args.workspace_name:
+                workspace_exists = True
+                break
+
+        if not workspace_exists:
+            print(f"Error: Workspace '{args.workspace_name}' does not exist.")
             sys.exit(1)
 
-        # Create GPR with auto GPU selection and manual cluster selection
+        print(f"Workspace '{args.workspace_name}' exists")
+
+        # Create GPR with auto cluster selection and manual GPU selection
         print(
-            f"Creating GPR '{args.request_name}' with auto GPU selection and manual cluster selection..."
+            f"Creating GPR '{args.request_name}' with auto cluster selection and manual GPU selection..."
         )
 
-        gpr_id = request_gpu_with_auto_gpu_selection(
+        gpr_id = request_gpu_with_auto_cluster(
             request_name=args.request_name,
             workspace_name=args.workspace_name,
             node_count=args.node_count,
@@ -150,14 +129,16 @@ def main():
             enforce_idle_timeout=args.enforce_idle_timeout,
             requeue_on_failure=args.requeue_on_failure,
             enable_eviction=args.enable_eviction,
-            preferred_clusters=args.preferred_clusters,
+            instance_type=args.instance_type,
+            gpu_shape=args.gpu_shape,
             authenticated_session=auth,
         )
 
         print(f"GPR created successfully!")
         print(f"   GPR ID: {gpr_id}")
         print(f"   Request Name: {args.request_name}")
-        print(f"   Preferred Clusters: {args.preferred_clusters}")
+        print(f"   Instance Type: {args.instance_type}")
+        print(f"   GPU Shape: {args.gpu_shape}")
 
     except Exception as e:
         print(f"Error occurred: {e}")

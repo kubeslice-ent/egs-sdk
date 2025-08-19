@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-gpu-deployment
+  labels:
+    app: nginx-gpu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-gpu
+  template:
+    metadata:
+      labels:
+        app: nginx-gpu
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            nvidia.com/gpu: 1
+          limits:
+            nvidia.com/gpu: 1
