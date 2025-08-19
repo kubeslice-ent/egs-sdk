@@ -169,8 +169,9 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"Unexpected error for {cur_ws.name}: {e}")
 
-            workspace_name = egs.delete_workspace(cur_ws.name, auth)
-            print(f"Workspace Deleted: {workspace_name}")
+            print(f"Deleting workspace: {cur_ws.name}")
+            egs.delete_workspace(cur_ws.name, auth)
+            print(f"Successfully Deleted Workspace: {cur_ws.name}")
 
     except EnvironmentError as e:
         print(f"Error: {e}")

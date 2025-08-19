@@ -1,9 +1,8 @@
 projectname: "avesha"
 workspaces:
-  - name: "payload"
+  - name: "yellow"
     namespaces: 
-      - "nim"
-      - "locust"
+      - "fffff"
     username: "admin-1"
     email: "admin1@avesha.io"
     clusters:

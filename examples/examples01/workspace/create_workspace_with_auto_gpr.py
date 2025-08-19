@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import time
 from datetime import datetime, timedelta, timezone
 
@@ -66,7 +67,6 @@ if __name__ == "__main__":
                 f"Error loading workspace configuration file: {str(e)}"
             ) from e
 
-
         for cur_ws in workspace_config.get("workspaces", []):
             required_keys = ["name", "clusters", "namespaces", "username", "email"]
             if not all(key in cur_ws for key in required_keys):
@@ -85,6 +85,9 @@ if __name__ == "__main__":
             workspace_dir = os.path.join("kubeconfigs", workspace_name)
             os.makedirs(workspace_dir, exist_ok=True)
             time.sleep(10)
+
+            # Collect all cluster configurations for GPR template binding
+            all_clusters_config = []
 
             for cluster_name in cur_ws["clusters"]:
                 try:
@@ -122,8 +125,6 @@ if __name__ == "__main__":
                         f"workspace {cluster_name} cluster"
                     ) from e
 
-
-                
                 try:
                     # Get the Inventory
                     inventory = egs.workspace_inventory(
@@ -153,33 +154,44 @@ if __name__ == "__main__":
                     print(f"Successfully Created GPR Template: {response}")
                     gpr_template_name = response
 
-                except Exception as e:
-                    print(f"Failed to create GPR template for {cur_ws['name']} cluster {cluster_name}: {e}")
-                    raise RuntimeError(f"GPR template creation failed for workspace '{cur_ws['name']}' cluster '{cluster_name}': {e}")
-
-                # Proceed with template binding since GPR template was created successfully
-                try:
-                    print(
-                        f"Binding the {gpr_template_name} Template to workspace {workspace_name}"
-                    )
+                    # Add cluster configuration to the list
                     cluster_dict = {
                         "clusterName": cluster_name,
                         "defaultTemplateName": gpr_template_name,
                         "templates": [gpr_template_name],
                     }
-                    binding_resp = egs.create_gpr_template_binding(
-                        workspace_name=workspace_name,
-                        clusters=[cluster_dict],
-                        enable_auto_gpr=True,
-                        authenticated_session=auth,
-                    )
-
-                    print(f"Successfully Created GPR Template Binding: {binding_resp}")
-                    gpr_template_binding_name = binding_resp.name
+                    all_clusters_config.append(cluster_dict)
 
                 except Exception as e:
-                    print(f"Failed to create GPR template binding for {cur_ws['name']} cluster {cluster_name}: {e}")
-                    raise RuntimeError(f"GPR template binding failed for workspace '{cur_ws['name']}' cluster '{cluster_name}': {e}")
+                    print(
+                        f"Failed to create GPR template for {cur_ws['name']} cluster {cluster_name}: {e}"
+                    )
+                    raise RuntimeError(
+                        f"GPR template creation failed for workspace '{cur_ws['name']}' cluster '{cluster_name}': {e}"
+                    )
+
+            # Create single GPR template binding for all clusters in the workspace
+            try:
+                print(
+                    f"Creating GPR Template Binding for workspace {workspace_name} with {len(all_clusters_config)} clusters"
+                )
+                binding_resp = egs.create_gpr_template_binding(
+                    workspace_name=workspace_name,
+                    clusters=all_clusters_config,
+                    enable_auto_gpr=True,
+                    authenticated_session=auth,
+                )
+
+                print(f"Successfully Created GPR Template Binding: {binding_resp}")
+                gpr_template_binding_name = binding_resp.name
+
+            except Exception as e:
+                print(
+                    f"Failed to create GPR template binding for workspace {workspace_name}: {e}"
+                )
+                raise RuntimeError(
+                    f"GPR template binding failed for workspace '{workspace_name}': {e}"
+                )
 
             try:
                 response = egs.create_api_key(
