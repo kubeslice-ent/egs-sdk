@@ -1,9 +1,23 @@
+"""
+General-purpose GPR creation script with flexible selection options.
+
+Usage Example:
+python examples/examples01/gpu_request/make_gpr.py \
+  --request_name "color-gpr-001" \
+  --workspace_name "color" \
+  --priority 100 \
+  --memory_per_gpu 22 \
+  --exit_duration "1h" \
+  --enable_auto_gpu_selection \
+  --enable_auto_cluster_selection
+"""
+
 import argparse
 import os
 import sys
 from typing import List
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 import egs
 from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse
 

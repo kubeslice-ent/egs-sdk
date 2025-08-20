@@ -1,15 +1,19 @@
+from typing import List
+
 from egs.util.string_util import serialize
+
 
 class InventoryUsage(object):
     def __init__(
-            self,
-            instanceType: str,
-            gpuShape: str,
-            memoryPerGpu: int,
-            gpuPerNode: int,
-            totalGpuNodes: int,
-            clusterName: str,
-            *args, **kwargs
+        self,
+        instanceType: str,
+        gpuShape: str,
+        memoryPerGpu: int,
+        gpuPerNode: int,
+        totalGpuNodes: int,
+        clusterName: str,
+        *args,
+        **kwargs
     ):
         self.instance_type = instanceType
         self.gpu_shape = gpuShape
@@ -23,8 +27,8 @@ class InventoryUsage(object):
 
 
 class ListWorkspaceInventoryUsageResponse(object):
-    def __init__(self, items: [InventoryUsage], *args, **kwargs):
-        iu = []
+    def __init__(self, items: List[dict], *args, **kwargs):
+        iu: List[InventoryUsage] = []
         for i in items:
             iu.append(InventoryUsage(**i))
         self.workspace_inventory = iu
