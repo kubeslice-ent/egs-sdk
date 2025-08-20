@@ -21,8 +21,7 @@ projectname: "avesha"
 workspaces:
   - name: "payload"
     namespaces:
-      - "nim"
-      - "locust"
+      - "fffff"
     username: "admin-1"
     email: "admin1@avesha.io"
     clusters:
@@ -49,13 +48,6 @@ Creates a workspace with basic configuration.
 python create_workspace.py --workspace_name "tezz-slice" --clusters "worker-1,worker-2" --namespaces "nim,locust" --username "admin" --email "admin@example.com"
 ```
 
-**Features:**
-- Creates a new workspace
-- Configures clusters and namespaces
-- Sets up user access
-- Downloads kubeconfig files for all clusters
-- Creates workspace-specific API keys
-
 **Arguments:**
 - `--workspace_name`: Name of the workspace to create
 - `--clusters`: Comma-separated list of cluster names
@@ -70,14 +62,6 @@ Creates a workspace with automatic GPR (GPU Request) functionality enabled.
 ```bash
 python create_workspace_with_auto_gpr.py --config workspace_config.yaml
 ```
-
-**Features:**
-- Creates workspace with basic configuration
-- Sets up GPR templates for each cluster
-- Binds GPR templates to enable auto-GPR functionality
-- Automatically handles GPU resource allocation
-- Downloads kubeconfig files for all clusters
-- Creates workspace-specific API keys
 
 **Arguments:**
 - `--config`: Path to YAML configuration file
@@ -97,11 +81,6 @@ Deletes a workspace and cleans up associated resources.
 python delete_workspace.py --config workspace_config.yaml
 ```
 
-**Features:**
-- Deletes API keys associated with the workspace
-- Removes the workspace completely
-- Uses YAML configuration file for batch operations
-
 **Arguments:**
 - `--config`: Path to YAML configuration file
 
@@ -112,11 +91,6 @@ Downloads kubeconfig files for specific clusters in a workspace.
 ```bash
 python download_kubeconfig.py --workspace "tezz-slice" --cluster "worker-1"
 ```
-
-**Features:**
-- Downloads kubeconfig for specific cluster
-- Saves to workspace-specific directory
-- Default output directory is script location
 
 **Arguments:**
 - `--workspace`: Name of the workspace

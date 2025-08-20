@@ -1,47 +1,43 @@
 
 # EGS SDK Examples
-We provide an SDK example script to create workspaces. 
+
+This folder contains comprehensive examples for using the EGS SDK to manage workspaces, GPU requests, inventory, and workload deployments.
+
+## Environment Variables Required
+
+- `EGS_ENDPOINT`: EGS API endpoint (required)
+- `EGS_API_KEY`: EGS API key for authentication (required)
 
 ## Prerequisites
 
-Before running the script, ensure the following requirements are met:
+### Python Version
+Ensure you have Python version 3.9 or later installed on your system.
 
 ### Install the Required Python Package
 ```bash
 pip install git+https://github.com/kubeslice-ent/egs-sdk.git
 ```
-If you want to install a specific branch or version, specify the branch as in the following command:
 
+If you want to install a specific branch or version, specify the branch as in the following command:
 ```bash
 pip install git+https://github.com/kubeslice-ent/egs-sdk.git@<branch_or_tag_name>
 ```
 
-### KubeConfig Setup
+## Folder Structure
 
-The KubeConfig for the target cluster must be configured before running this script.
+- **`workspace/`**: Workspace management scripts (create, delete, kubeconfig download)
+- **`gpu_request/`**: GPU Request (GPR) management scripts (create, list, release)
+- **`inventory/`**: Inventory listing and GPU information scripts
+- **`workload_deployment/`**: Kubernetes workload deployment scripts and manifests
 
-### Set Environment Variables
-
-Ensure the following environment variables are set:
-
-```bash
-export EGS_ENDPOINT=<your-egs-endpoint>
-export EGS_API_KEY=<your-egs-api-key>
-```
-
-### Python
-
-Ensure you have Python version 3.9 or later installed on your system.
-
----
-
-## Workspace
+## Workspace Management
 
 ### Workspace Configuration YAML
 
-The script uses a configuration file in YAML format. The following is an example YAML.
+The workspace scripts use a configuration file in YAML format.
 
-```bash
+**Structure:**
+```yaml
 projectname: "avesha"
 workspaces:
   - name: "workspace-b"
@@ -55,23 +51,68 @@ workspaces:
     email: "admin1@acme.io"
 ```
 
-### YAML Parameters Description
+**Required Fields:**
+- `projectname`: The project name associated with the workspaces
+- `workspaces`: A list of workspace configurations
+- `name`: The name of the workspace
+- `namespaces`: List of namespaces associated with the workspace
+- `clusters`: List of clusters to associate with the workspace
+- `username`: The username associated with the workspace
+- `email`: The contact email for the workspace
 
-* `projectname`: The project name associated with the workspaces.
-* `workspaces`: A list of workspace configurations.
-* `name`: The name of the workspace.
-* `namespaces`: List of namespaces associated with the workspace.
-* `clusters`: List of clusters to associate with the workspace.
-* `username`: The username associated with the workspace.
-* `email`: The contact email for the workspace.
+### Available Scripts
 
+**See:** `workspace/README.md` for detailed documentation of all workspace scripts.
 
-### Running the Script
+## GPU Request (GPR) Management
 
-To create workspaces based on the configuration file, run:
+### Create a GPR
+The `make_gpr.py` script is used to create a GPR.
+
+**Basic Syntax:**
 ```bash
-python create_workspace.py --config workspace_config.yaml
+python make_gpr.py --cluster_name <cluster-name> --workspace_name <workspace-name> --priority <priority-number> --exit_duration <duration-in-0d0h0m> --request_name <gpr-request-name> --gpu_shape <GPU shape>
 ```
+
+**Examples:**
+
+**With GPU shape parameter:**
+```bash
+python make_gpr.py --cluster_name "worker-1" --workspace_name test1 --priority 100 --exit_duration 5m --request_name test-gpr4 --gpu_shape Tesla-P100-PCIE-16GB
+```
+
+**Without GPU shape parameter (defaults to first node, first GPU):**
+```bash
+python make_gpr.py --cluster_name "worker-1" --workspace_name test1 --priority 100 --exit_duration 5m --request_name test-gpr1
+```
+
+### Release a GPR
+The `release_gpr.py` script is used to release a GPR.
+
+**Syntax:**
+```bash
+python release_gpr.py --request_id <gpr-request-id>
+```
+
+**Example:**
+```bash
+python release_gpr.py --request_id gpr-191b3dd5-f110
+```
+
+**Behavior:**
+- If status is "Queued" → Cancels the request
+- If status is "Successful" → Releases the GPU request
+
+### Available Scripts
+
+**See:** `gpu_request/README.md` for detailed documentation of all GPR scripts.
+
+## Inventory Management
+
+### List Inventory
+Scripts to view and analyze GPU inventory across clusters.
+
+**See:** `inventory/README.md` for detailed documentation of inventory scripts.
 
 ## Workload Deployment
 
@@ -85,19 +126,11 @@ The `workload_deployment/` folder contains scripts and manifests for deploying G
 python workload_deployment/deploy_gpu_workload.py --workspace "tezz-slice" --cluster "worker-1" --manifest "workload_deployment/deploy.yaml" --namespace "default"
 ```
 
-**Features:**
-- Downloads kubeconfig for the specified workspace and cluster
-- Creates GPR (GPU Request) with auto GPU selection and manual cluster selection
-- Initializes Kubernetes client using the downloaded kubeconfig
-- Loads deployment manifest from YAML file
-- Creates deployment with proper resource configuration
-- Supports any Kubernetes deployment manifest
-
 **Required Arguments:**
 - `--workspace`: Workspace name
 - `--cluster`: Cluster name  
 - `--manifest`: Path to deployment YAML manifest file
-- `--namespace`: Namespace for deployment
+- `--namespace`: Namespace for deployment (must be onboarded into the workspace)
 
 **Example:**
 ```bash
@@ -106,94 +139,30 @@ python workload_deployment/deploy_gpu_workload.py --workspace "test1" --cluster 
 
 **See:** `workload_deployment/README.md` for detailed documentation.
 
-## GPR
+## Common Parameters
 
-### Create a GPR
-The make-gpr.py script is used to create a GPR.
+- `--workspace_name` / `--workspace`: Name of the workspace
+- `--cluster_name` / `--cluster`: Name of the cluster
+- `--priority`: Priority of the request (lower number = higher priority)
+- `--exit_duration`: Exit duration (e.g., '5m', '1h', '0d0h0m')
+- `--request_name`: Name of the GPU request
+- `--gpu_shape`: GPU shape specification (optional)
 
-Syntax
-```bash
-python make_gpr.py --cluster_name <cluster-name> --workspace_name <workspace-name> --priority <priority-number> --exit_duration <duration-in-0d0h0m> --request_name <gpr-request-name> --gpu_shape <GPU shape>
-```
+## Output
 
-
-Examples
-note
-The --gpu_shape shape is an optional parameter. If the provided GPU shape is not found or if the --gpu_shape parameter is not passed. It will default to first node, first GPU.
-
-The following is an example command to create a GPR (passing gpu-shape parameter):
-```bash
-python make_gpr.py --cluster_name "worker-1" --workspace_name test1 --priority 100 --exit_duration 5m --request_name test-gpr4 --gpu_shape Tesla-P100-PCIE-16GB
-```
-
-Example Output
-```bash
-Workspace test1 exists in worker-1 cluster
-Tesla-P100-PCIE-16GB
-{"cluster_name": "worker-1", "gpu_per_node": 2, "gpu_shape": "Tesla-P100-PCIE-16GB", "instance_type": "n1-highcpu-2", "memory_per_gpu": 16, "total_gpu_nodes": 1}
-GPR Created Successfully with gpu_request_id:  gpr-7bdeec73-06be
-```
-
-The following is an example command to create a GPR (without gpu-shape parameter):
-```bash
-python make_gpr.py --cluster_name "worker-1" --workspace_name test1 --priority 100 --exit_duration 5m --request_name test-gpr1
-```
-
-Example Output
-```bash
-Workspace test1 exists in worker-1 cluster
-GPR Created Successfully with gpu_request_id:  gpr-4d8e77d1-632d
-```
-
-Release a GPR
-The release_gpr.py script is used to release a GPR. The GPR request ID is provided as input parameter to the script.
-
-Syntax
-```bash
-python release_gpr.py --request_id <gpr-request-id>
-```
-
-Example
-The following is an example command to release a GPR:
-```bash
-python release_gpr.py --request_id gpr-191b3dd5-f110
-```
-
-Example Output (If the GPR request is in queue)
-```bash
-Current GPR Provisioning status :Queued
-Hence Canceling GPU Request
-```
-
-Example Output (If the GPR is provisioned)
-
-```bash
-Current GPR Provisioning status :Successful
-Hence Releasing GPU Request
-```
-
-
-## Script Capability 
-
-* Authenticates with the EGS API using provided environment variables
-* Reads the workspace configuration YAML file
-* Creates workspaces based on the configuration
-* Retrieves and saves the KubeConfig for each cluster under the corresponding workspace folder
-* Fetches the authentication token from the Kubernetes secret and saves it as `token.txt` under the workspace folder
-
-### Output
-
-On a successful execution, the script will:
+On successful execution, scripts will:
 
 * Create workspaces and save kubeconfig files in `kubeconfigs/<workspace_name>/`
-* Retrieve and save the Kubernetes authentication token as `token.txt`
+* Retrieve and save Kubernetes authentication tokens as `token.txt`
 * Log messages indicating success or failure for each step
+* Return GPR IDs for GPU requests
+* Deploy workloads to specified clusters
 
 ## Troubleshooting
 
-If you encounter issues, then:
+If you encounter issues:
 
-* Ensure the kubeconfig for your cluster is correctly set up
 * Verify that the correct EGS API credentials are being used
-* Check for proper formatting of the YAML configuration file.
+* Check for proper formatting of YAML configuration files
 * Review error messages to identify missing dependencies or incorrect configurations
+* Ensure all required environment variables are set
