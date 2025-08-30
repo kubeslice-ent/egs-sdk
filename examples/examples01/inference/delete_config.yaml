@@ -1,0 +1,4 @@
+inference_endpoints:
+  - endpoint_name: "from-sdk-5"
+    cluster_name: "worker-1"
+    workspace_name: "green"

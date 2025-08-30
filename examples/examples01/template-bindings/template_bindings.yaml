@@ -1,0 +1,11 @@
+# Binding should only be created for new workspace with no bindings available or else existing binding will be deleted.
+
+template_bindings:
+  - workspace_name: "baba-yaga"
+    clusters:
+      - cluster_name: "worker-1"
+        default_template_name: "purple-test-20250702-160650"
+        templates:
+          - "purple-test-20250702-160650"
+
+    enable_auto_gpr: true
