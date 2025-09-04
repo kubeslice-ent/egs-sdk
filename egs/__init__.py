@@ -10,6 +10,7 @@ from egs import (
     inference_endpoint,
     inventory_operations,
     workspace,
+    workspace_policy,
 )
 
 authenticate = authentication.authenticate
@@ -17,6 +18,10 @@ authenticate = authentication.authenticate
 create_api_key = api_key.create_api_key
 delete_api_key = api_key.delete_api_key
 list_api_keys = api_key.list_api_keys
+
+list_workspace_policies = workspace_policy.list_workspace_policies
+get_workspace_policy = workspace_policy.get_workspace_policy
+update_workspace_policy = workspace_policy.update_workspace_policy
 
 create_workspace = workspace.create_workspace
 delete_workspace = workspace.delete_workspace

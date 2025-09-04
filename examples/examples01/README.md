@@ -140,6 +140,31 @@ Hence Releasing GPU Request
 ```
 
 
+## Workspace Policy
+
+The `workspace_policy/` folder contains scripts for managing workspace policies:
+
+### Scripts Available
+
+- **`list_workspace_policies.py`**: List all workspace policies
+- **`get_workspace_policy.py`**: Get a specific workspace policy
+- **`update_workspace_policy.py`**: Update workspace policy configuration
+
+### Example Usage
+
+```bash
+# List all workspace policies
+python workspace_policy/list_workspace_policies.py
+
+# Get specific workspace policy
+python workspace_policy/get_workspace_policy.py --workspace "my-workspace"
+
+# Update workspace policy
+python workspace_policy/update_workspace_policy.py --workspace "my-workspace" --priority-range "high" --max-gprs 5
+```
+
+See `workspace_policy/README.md` for detailed documentation.
+
 ## Script Capability 
 
 * Authenticates with the EGS API using provided environment variables

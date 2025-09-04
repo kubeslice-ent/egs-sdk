@@ -1,12 +1,15 @@
 from egs.util.string_util import serialize
 
+
 class ApiResponse(object):
-    def __init__(self,
-                 status: str,
-                 message: str,
-                 statusCode: int,
-                 data: dict = None,
-                 error: dict = None):
+    def __init__(
+        self,
+        status: str,
+        message: str,
+        statusCode: int,
+        data: dict = None,
+        error: dict = None,
+    ):
         self.error = error
         self.data = data
         self.status_code = statusCode
@@ -15,3 +18,4 @@ class ApiResponse(object):
 
     def __str__(self):
         return serialize(self)
+
