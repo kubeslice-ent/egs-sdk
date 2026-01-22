@@ -142,12 +142,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             payload,
         )
 
-        print("api_response workload placement create: ", api_response)
-
-        if api_response.status_code == 200:
-            return CreateWorkloadPlacementResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response)
+        return CreateWorkloadPlacementResponse.from_api_response(api_response.data)
 
     def list(
         self,
@@ -172,10 +169,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             "GET",
         )
 
-        if api_response.status_code == 200:
-            return ListWorkloadPlacementResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response)
+        return ListWorkloadPlacementResponse.from_api_response(api_response.data)
 
     def list_by_workspace(
         self,
@@ -203,10 +199,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             "GET",
         )
 
-        if api_response.status_code == 200:
-            return ListWorkloadPlacementResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response)
+        return ListWorkloadPlacementResponse.from_api_response(api_response.data)
 
     def get(
         self,
@@ -234,10 +229,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             "GET",
         )
 
-        if api_response.status_code == 200:
-            return GetWorkloadPlacementResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return GetWorkloadPlacementResponse.from_api_response(api_response.data)
 
     def update(
         self,
@@ -278,10 +272,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             payload,
         )
 
-        if api_response.status_code == 200:
-            return UpdateWorkloadPlacementResponse.from_api_response(name)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return UpdateWorkloadPlacementResponse.from_api_response(name)
 
     def delete(
         self,
@@ -309,10 +302,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             "DELETE",
         )
 
-        if api_response.status_code == 200:
-            return DeleteWorkloadPlacementResponse.from_api_response(name)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return DeleteWorkloadPlacementResponse.from_api_response(name)
 
     def enable_egs(
         self,
@@ -344,10 +336,9 @@ class WorkloadPlacement(IWorkloadPlacementService):
             payload,
         )
 
-        if api_response.status_code == 200:
-            return EnableEGSResponse.from_api_response(name)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return EnableEGSResponse.from_api_response(name)
 
     def _handle_error(
         self,

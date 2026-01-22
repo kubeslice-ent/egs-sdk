@@ -63,12 +63,11 @@ from egs.internal.workload_placement.workload_placement_types import (
     DeletionPolicy,
     HelmConfig,
     HelmFlags,
-    Manifest,
-    ManifestMetadata,
     ManifestResource,
     SecretRef,
     Step,
     StepType,
+    YamlValues,
 )
 
 __all__ = [
@@ -94,7 +93,6 @@ __all__ = [
     "HelmFlags",
     "SecretRef",
     "ManifestResource",
-    "Manifest",
-    "ManifestMetadata",
+    "YamlValues",
     "CmdExec",
 ]

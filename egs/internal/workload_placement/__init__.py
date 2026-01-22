@@ -1,14 +1,14 @@
 """Workload placement internal types and utilities."""
 
 # Service
-from egs.internal.workload_placement.workload_placement_service import (
+from .workload_placement_service import (
     IWorkloadPlacementService,
     WorkloadPlacement,
     workloadPlacement,
 )
 
 # All types (Request and Response models)
-from egs.internal.workload_placement.workload_placement_types import (
+from .workload_placement_types import (
     # Enums
     DeletionPolicy,
     StepType,
@@ -19,8 +19,6 @@ from egs.internal.workload_placement.workload_placement_types import (
     HelmFlags,
     SecretRef,
     # Request - Manifest
-    Manifest,
-    ManifestMetadata,
     ManifestResource,
     # Request - Command
     CmdExec,
@@ -67,8 +65,6 @@ __all__ = [
     "SecretRef",
     # Request - Manifest
     "ManifestResource",
-    "Manifest",
-    "ManifestMetadata",
     # Request - Command
     "CmdExec",
     # Request - Step

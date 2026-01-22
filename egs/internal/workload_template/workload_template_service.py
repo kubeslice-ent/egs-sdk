@@ -125,10 +125,9 @@ class WorkloadTemplate(IWorkloadTemplateService):
             payload,
         )
 
-        if api_response.status_code == 200:
-            return CreateWorkloadTemplateResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response)
+        return CreateWorkloadTemplateResponse.from_api_response(api_response.data)
 
     def list(
         self,
@@ -153,10 +152,9 @@ class WorkloadTemplate(IWorkloadTemplateService):
             "GET",
         )
 
-        if api_response.status_code == 200:
-            return ListWorkloadTemplateResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response)
+        return ListWorkloadTemplateResponse.from_api_response(api_response.data)
 
     def get(
         self,
@@ -184,10 +182,9 @@ class WorkloadTemplate(IWorkloadTemplateService):
             "GET",
         )
 
-        if api_response.status_code == 200:
-            return GetWorkloadTemplateResponse.from_api_response(api_response.data)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return GetWorkloadTemplateResponse.from_api_response(api_response.data)
 
     def update(
         self,
@@ -221,10 +218,9 @@ class WorkloadTemplate(IWorkloadTemplateService):
             payload,
         )
 
-        if api_response.status_code == 200:
-            return UpdateWorkloadTemplateResponse.from_api_response(name)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return UpdateWorkloadTemplateResponse.from_api_response(name)
 
     def delete(
         self,
@@ -252,10 +248,9 @@ class WorkloadTemplate(IWorkloadTemplateService):
             "DELETE",
         )
 
-        if api_response.status_code == 200:
-            return DeleteWorkloadTemplateResponse.from_api_response(name)
-
-        self._handle_error(api_response, resource_name=name)
+        if not 200 <= api_response.status_code < 300:
+            self._handle_error(api_response, resource_name=name)
+        return DeleteWorkloadTemplateResponse.from_api_response(name)
 
     def _handle_error(
         self,

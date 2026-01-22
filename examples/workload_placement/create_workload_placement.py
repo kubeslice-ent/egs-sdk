@@ -1,14 +1,15 @@
 import os
 import sys
 
-import yaml
-
-from egs.internal.workload_placement.workload_placement_types import YamlValues
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 import egs
-from egs.workload_placement import (CreateWorkloadPlacementRequest, HelmConfig,
-                                    Manifest, ManifestResource, Step, StepType)
+from egs import (
+    CreateWorkloadPlacementRequest,
+    HelmConfig,
+    ManifestResource,
+    Step,
+    StepType,
+    YamlValues,
+)
 
 # Environment variables
 EGS_API_ENDPOINT = os.environ.get("EGS_API_ENDPOINT")
@@ -92,9 +93,11 @@ spec:
     )
 
     # Manifest resource for PersistentVolume - parses YAML to dict
+    e = YamlValues(values=manifest_yaml)
+    print("basice ", e)
     pv_manifest = ManifestResource(
         name="vllm-1-pvc",
-        manifest=Manifest(**yaml.safe_load(manifest_yaml)),
+        manifest=e,
     )
 
     # Create the workload placement request

@@ -16,12 +16,11 @@ from egs.internal.workload_placement.workload_placement_types import (
     HelmConfig,
     HelmConfigResponse,
     HelmFlags,
-    Manifest,
-    ManifestMetadata,
     ManifestResource,
     ManifestResourceResponse,
     SecretRef,
     Step,
+    YamlValues,
     validate_duration,
 )
 

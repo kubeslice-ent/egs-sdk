@@ -1,7 +1,7 @@
 from egs.exceptions import Unauthorized
 
 global _authenticated_session
-from egs import (
+from . import (
     api_key,
     authentication,
     gpr_template,
@@ -9,10 +9,41 @@ from egs import (
     gpu_requests,
     inference_endpoint,
     inventory_operations,
-    workload_placement,
     workload_template,
     workspace,
     workspace_policy,
+)
+
+from .internal.workload_placement import (
+    WorkloadPlacement,
+    workloadPlacement,
+    YamlValues,
+    HelmConfig,
+    HelmFlags,
+    SecretRef,
+    ManifestResource,
+    CmdExec,
+    Step,
+    StepType,
+    DeletionPolicy,
+    CreateWorkloadPlacementRequest,
+    UpdateWorkloadPlacementRequest,
+    CreateWorkloadPlacementResponse,
+    UpdateWorkloadPlacementResponse,
+    DeleteWorkloadPlacementResponse,
+    GetWorkloadPlacementResponse,
+    ListWorkloadPlacementResponse,
+    WorkloadPlacementItem,
+    ClusterPlacementDecisionResponse,
+    ConditionResponse,
+    GprDetailsResponse,
+    GprStatusResponse,
+    HelmConfigResponse,
+    ManifestConditionResponse,
+    ManifestIdentifierResponse,
+    ManifestResourceResponse,
+    StepResultResponse,
+    WorkloadPlacementStatusResponse,
 )
 
 authenticate = authentication.authenticate
@@ -65,7 +96,7 @@ list_gpr_template_bindings = gpr_template_binding.list_gpr_template_bindings
 update_gpr_template_binding = gpr_template_binding.update_gpr_template_binding
 delete_gpr_template_binding = gpr_template_binding.delete_gpr_template_binding
 
-workloadPlacement = workload_placement.workloadPlacement
+# workloadPlacement is imported from .internal.workload_placement above
 workloadTemplate = workload_template.workloadTemplate
 
 
@@ -89,3 +120,87 @@ def get_authenticated_session(authenticated_session):
 
 
 update_global_session(None)
+
+__all__ = [
+    # Authentication
+    "authenticate",
+    # API Keys
+    "create_api_key",
+    "delete_api_key",
+    "list_api_keys",
+    # Workspace Policy
+    "list_workspace_policies",
+    "get_workspace_policy",
+    "update_workspace_policy",
+    # Workspace
+    "create_workspace",
+    "delete_workspace",
+    "list_workspaces",
+    "get_workspace_kubeconfig",
+    # Inventory
+    "workspace_inventory",
+    "inventory",
+    # GPU Requests
+    "request_gpu",
+    "request_gpu_with_auto_selection",
+    "request_gpu_with_auto_gpu_selection",
+    "request_gpu_with_auto_cluster",
+    "request_gpu_with_manual_selection",
+    "cancel_gpu_request",
+    "update_gpu_request_priority",
+    "update_gpu_request_name",
+    "release_gpu",
+    "gpu_request_status",
+    "gpu_request_status_for_workspace",
+    # Inference Endpoint
+    "list_inference_endpoint",
+    "create_inference_endpoint",
+    "create_inference_endpoint_with_custom_model_spec",
+    "describe_inference_endpoint",
+    "delete_inference_endpoint",
+    # GPR Template
+    "create_gpr_template",
+    "get_gpr_template",
+    "list_gpr_templates",
+    "update_gpr_template",
+    "delete_gpr_template",
+    # GPR Template Binding
+    "create_gpr_template_binding",
+    "get_gpr_template_binding",
+    "list_gpr_template_bindings",
+    "update_gpr_template_binding",
+    "delete_gpr_template_binding",
+    # Workload Placement Service
+    "WorkloadPlacement",
+    "workloadPlacement",
+    # Workload Template Service
+    "workloadTemplate",
+    # Workload Placement Types
+    "YamlValues",
+    "HelmConfig",
+    "HelmFlags",
+    "SecretRef",
+    "ManifestResource",
+    "CmdExec",
+    "Step",
+    "StepType",
+    "DeletionPolicy",
+    "CreateWorkloadPlacementRequest",
+    "UpdateWorkloadPlacementRequest",
+    "CreateWorkloadPlacementResponse",
+    "UpdateWorkloadPlacementResponse",
+    "DeleteWorkloadPlacementResponse",
+    "GetWorkloadPlacementResponse",
+    "ListWorkloadPlacementResponse",
+    "WorkloadPlacementItem",
+    "ClusterPlacementDecisionResponse",
+    "ConditionResponse",
+    "GprDetailsResponse",
+    "GprStatusResponse",
+    "HelmConfigResponse",
+    "ManifestConditionResponse",
+    "ManifestIdentifierResponse",
+    "ManifestResourceResponse",
+    "StepResultResponse",
+    "WorkloadPlacementStatusResponse",
+]

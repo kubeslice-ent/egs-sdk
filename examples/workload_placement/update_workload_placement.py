@@ -1,13 +1,11 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 import egs
-from egs.workload_placement import (
+from egs import (
     HelmConfig,
-    Manifest,
-    ManifestMetadata,
     ManifestResource,
+    YamlValues,
 )
 
 # Environment variables
@@ -46,24 +44,29 @@ def update_workload_placement():
         },
     )
 
-    # Updated manifest resource - must send complete resource
+    # Updated manifest resource - must send complete resource as YAML or dict
+    updated_manifest_yaml = """
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vllm-1-pv
+  labels:
+    model: llama3-1-pv
+    updated: "true"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 20Gi
+  hostPath:
+    path: /data/llama3
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-path
+"""
+
     updated_manifest = ManifestResource(
         name="vllm-1-pvc",
-        manifest=Manifest(
-            apiVersion="v1",
-            kind="PersistentVolume",
-            metadata=ManifestMetadata(
-                name="vllm-1-pv",
-                labels={"model": "llama3-1-pv", "updated": "true"},  # Added label
-            ),
-            spec={
-                "accessModes": ["ReadWriteOnce"],
-                "capacity": {"storage": "20Gi"},  # Changed from 15Gi to 20Gi
-                "hostPath": {"path": "/data/llama3"},
-                "persistentVolumeReclaimPolicy": "Retain",
-                "storageClassName": "local-path",
-            },
-        ),
+        manifest=YamlValues(values=updated_manifest_yaml),
     )
 
     try:

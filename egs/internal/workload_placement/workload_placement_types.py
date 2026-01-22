@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 from pydantic.functional_validators import field_validator
 
 # ============================================================================
@@ -114,6 +114,11 @@ class YamlValues(BaseModel):
                 raise ValueError("YAML must be a mapping (key-value pairs)")
             return dict(parsed)
         raise TypeError("values must be a dict or YAML string")  # type: ignore[unreachable]
+
+    @model_serializer
+    def serialize_model(self) -> Dict[str, Any]:
+        """Serialize directly to the inner dict (flatten the wrapper)."""
+        return self.values
 
 
 # ============================================================================
