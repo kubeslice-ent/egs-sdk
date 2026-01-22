@@ -9,6 +9,8 @@ from egs import (
     gpu_requests,
     inference_endpoint,
     inventory_operations,
+    workload_placement,
+    workload_template,
     workspace,
     workspace_policy,
 )
@@ -62,6 +64,9 @@ get_gpr_template_binding = gpr_template_binding.get_gpr_template_binding
 list_gpr_template_bindings = gpr_template_binding.list_gpr_template_bindings
 update_gpr_template_binding = gpr_template_binding.update_gpr_template_binding
 delete_gpr_template_binding = gpr_template_binding.delete_gpr_template_binding
+
+workloadPlacement = workload_placement.workloadPlacement
+workloadTemplate = workload_template.workloadTemplate
 
 
 def update_global_session(session):
