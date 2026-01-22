@@ -127,7 +127,7 @@ class YamlValues(BaseModel):
 
 
 class HelmConfig(BaseModel):
-    """Helm configuration for request - values accepts dict or YAML string."""
+    """Helm configuration for request - values accepts YamlValues with dict or YAML string."""
 
     name: str
     chart: str
@@ -147,7 +147,7 @@ class HelmConfig(BaseModel):
 
 
 class ManifestResource(BaseModel):
-    """Manifest resource wrapper."""
+    """Manifest resource wrapper - manifest accepts YamlValues with dict or YAML string."""
 
     name: str
     manifest: YamlValues

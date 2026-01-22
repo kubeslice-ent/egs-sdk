@@ -7,11 +7,10 @@ from egs.workload_template import (
     CreateWorkloadTemplateRequest,
     DeletionPolicy,
     HelmConfig,
-    Manifest,
-    ManifestMetadata,
     ManifestResource,
     Step,
     StepType,
+    YamlValues,
 )
 
 # Environment variables
@@ -32,6 +31,18 @@ def create_workload_template():
         api_key=EGS_API_KEY,
     )
 
+    # Helm values as YAML string
+    helm_values = """
+routerSpec:
+  enableRouter: false
+servingEngineSpec:
+  modelSpec:
+    - name: llama3
+      modelURL: meta-llama/Llama-3.2-1B-Instruct
+      replicaCount: 1
+      requestGPU: 1
+"""
+
     # Helm config with YAML values
     helm_config = HelmConfig(
         name="vllm-app",
@@ -40,39 +51,32 @@ def create_workload_template():
         releaseNamespace="default",
         repoName="vllm",
         repoURL="https://vllm-project.github.io/production-stack",
-        values={
-            "routerSpec": {"enableRouter": False},
-            "servingEngineSpec": {
-                "modelSpec": [
-                    {
-                        "name": "llama3",
-                        "modelURL": "meta-llama/Llama-3.2-1B-Instruct",
-                        "replicaCount": 1,
-                        "requestGPU": 1,
-                    }
-                ]
-            },
-        },
+        values=YamlValues(values=helm_values),
     )
+
+    # Manifest as YAML string
+    manifest_yaml = """
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vllm-pv
+  labels:
+    app: vllm
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 15Gi
+  hostPath:
+    path: /data/vllm
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-path
+"""
 
     # Manifest resource for PersistentVolume
     pv_manifest = ManifestResource(
         name="vllm-pvc",
-        manifest=Manifest(
-            apiVersion="v1",
-            kind="PersistentVolume",
-            metadata=ManifestMetadata(
-                name="vllm-pv",
-                labels={"app": "vllm"},
-            ),
-            spec={
-                "accessModes": ["ReadWriteOnce"],
-                "capacity": {"storage": "15Gi"},
-                "hostPath": {"path": "/data/vllm"},
-                "persistentVolumeReclaimPolicy": "Retain",
-                "storageClassName": "local-path",
-            },
-        ),
+        manifest=YamlValues(values=manifest_yaml),
     )
 
     # Create the workload template request

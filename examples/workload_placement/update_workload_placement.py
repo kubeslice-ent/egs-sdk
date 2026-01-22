@@ -2,11 +2,7 @@ import os
 import sys
 
 import egs
-from egs import (
-    HelmConfig,
-    ManifestResource,
-    YamlValues,
-)
+from egs import HelmConfig, ManifestResource, YamlValues
 
 # Environment variables
 EGS_API_ENDPOINT = os.environ.get("EGS_API_ENDPOINT")
@@ -29,6 +25,26 @@ def update_workload_placement():
         api_key=EGS_API_KEY,
     )
 
+    # Updated helm values as YAML string
+    updated_helm_values = """
+routerSpec:
+  enableRouter: false
+  resources:
+    limits:
+      cpu: "4"
+      memory: 32Gi
+    requests:
+      cpu: "2"
+      memory: 8Gi
+servingEngineSpec:
+  modelSpec:
+    - name: llama3
+      replicaCount: 2
+      requestCPU: 2
+      requestGPU: 1
+      requestMemory: 4Gi
+"""
+
     # Updated helm config - must send complete config with new and existing values
     updated_helm_config = HelmConfig(
         name="vllm-app",
@@ -37,11 +53,7 @@ def update_workload_placement():
         releaseNamespace="pizza",
         repoName="vllm",
         repoURL="https://vllm-project.github.io/production-stack",
-        values={
-            "routerSpec": {
-                "enableRouter": True,  # Changed from False to True
-            },
-        },
+        values=YamlValues(values=updated_helm_values),
     )
 
     # Updated manifest resource - must send complete resource as YAML or dict
