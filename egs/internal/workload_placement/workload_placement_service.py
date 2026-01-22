@@ -144,7 +144,10 @@ class WorkloadPlacement(IWorkloadPlacementService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response)
-        return CreateWorkloadPlacementResponse.from_api_response(api_response.data)
+        
+        # Type narrowing
+        data = api_response.data if isinstance(api_response.data, dict) else {}
+        return CreateWorkloadPlacementResponse.from_api_response(data)
 
     def list(
         self,
@@ -171,7 +174,10 @@ class WorkloadPlacement(IWorkloadPlacementService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response)
-        return ListWorkloadPlacementResponse.from_api_response(api_response.data)
+        
+        # Type narrowing: list returns a list
+        data = api_response.data if isinstance(api_response.data, list) else []
+        return ListWorkloadPlacementResponse.from_api_response(data)
 
     def list_by_workspace(
         self,
@@ -201,7 +207,10 @@ class WorkloadPlacement(IWorkloadPlacementService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response)
-        return ListWorkloadPlacementResponse.from_api_response(api_response.data)
+        
+        # Type narrowing: list returns a list
+        data = api_response.data if isinstance(api_response.data, list) else []
+        return ListWorkloadPlacementResponse.from_api_response(data)
 
     def get(
         self,
@@ -231,7 +240,10 @@ class WorkloadPlacement(IWorkloadPlacementService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response, resource_name=name)
-        return GetWorkloadPlacementResponse.from_api_response(api_response.data)
+        
+        # Type narrowing
+        data = api_response.data if isinstance(api_response.data, dict) else {}
+        return GetWorkloadPlacementResponse.from_api_response(data)
 
     def update(
         self,

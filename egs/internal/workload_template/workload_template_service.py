@@ -127,7 +127,10 @@ class WorkloadTemplate(IWorkloadTemplateService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response)
-        return CreateWorkloadTemplateResponse.from_api_response(api_response.data)
+        
+        # Type narrowing: create returns a dict
+        data = api_response.data if isinstance(api_response.data, dict) else {}
+        return CreateWorkloadTemplateResponse.from_api_response(data)
 
     def list(
         self,
@@ -184,7 +187,10 @@ class WorkloadTemplate(IWorkloadTemplateService):
 
         if not 200 <= api_response.status_code < 300:
             self._handle_error(api_response, resource_name=name)
-        return GetWorkloadTemplateResponse.from_api_response(api_response.data)
+                
+        # Type narrowing: get returns a dict
+        data = api_response.data if isinstance(api_response.data, dict) else {}
+        return GetWorkloadTemplateResponse.from_api_response(data)
 
     def update(
         self,
