@@ -272,7 +272,6 @@ class WorkloadPlacement(IWorkloadPlacementService):
         auth = egs.get_authenticated_session(authenticated_session)
 
         request = UpdateWorkloadPlacementRequest(
-            name=name,
             helmConfigs=helm_configs,
             manifestResources=manifest_resources,
         )

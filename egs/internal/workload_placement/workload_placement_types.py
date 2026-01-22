@@ -490,9 +490,8 @@ class DeleteWorkloadPlacementResponse(BaseModel):
 
 
 class UpdateWorkloadPlacementRequest(BaseModel):
-    """Request model for updating a workload placement (helmConfigs and manifestResources)."""
+    """Request model for updating a workload placement (helmConfigs and manifestResources only)."""
 
-    name: str
     helmConfigs: Optional[List[HelmConfig]] = None
     manifestResources: Optional[List[ManifestResource]] = None
 

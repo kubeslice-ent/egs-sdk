@@ -62,8 +62,7 @@ class CreateWorkloadTemplateRequest(BaseModel):
 
 
 class UpdateWorkloadTemplateRequest(BaseModel):
-    """Request model for updating a workload template."""
-    name: Optional[str] = None  # Optional for update
+    """Request model for updating a workload template (name is passed via URL path)."""
     burstDuration: Optional[str] = None
     deletionPolicy: Optional[DeletionPolicy] = None
     clusterNames: Optional[List[str]] = None
