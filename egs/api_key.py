@@ -1,9 +1,72 @@
+import http.client
 import json
+from datetime import datetime, timedelta, timezone
 from typing import Optional
+from urllib.parse import urlparse
 
 import egs
 from egs.authenticated_session import AuthenticatedSession
 from egs.exceptions import UnhandledException
+
+
+def create_owner_api_key(
+    *,
+    egs_endpoint: str,
+    egs_token: str,
+    name: str,
+    username: str,
+    validity: str = "",
+    description: str = "",
+):
+    """
+    Creates an Owner API Key using the EGS_ACCESS_TOKEN.
+    """
+    # Parse the URL to extract host and path
+    parsed_url = urlparse(egs_endpoint)
+    host = parsed_url.netloc
+    scheme = parsed_url.scheme
+    path = "/api/v1/api-key"
+
+    # Calculate validity (current date + 1 day) and format as "YYYY-MM-DD"
+    if not validity:
+        validity = (datetime.now(timezone.utc) + timedelta(days=1)).strftime("%Y-%m-%d")
+
+    req_body = {
+        "name": name,
+        "userName": username,
+        "description": description,
+        "role": "Owner",
+        "validity": validity,
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {egs_token}",
+    }
+
+    # Use HTTP or HTTPS connection
+    conn = (
+        http.client.HTTPSConnection(host)
+        if scheme == "https"
+        else http.client.HTTPConnection(host)
+    )
+
+    try:
+        conn.request("POST", path, body=json.dumps(req_body), headers=headers)
+        res = conn.getresponse()
+        response = json.loads(res.read().decode("utf-8"))
+        if res.status != 200:
+            raise ValueError(f"Failed to create Owner API Key: {res.status} {response}")
+
+        owner_api_key = response.get("data", {}).get("apiKey")
+
+        if not owner_api_key:
+            raise ValueError(f"API key not found in response: {response}")
+        return owner_api_key
+
+    except Exception as err:
+        raise RuntimeError(f"Error creating API key: {err}") from err
+    finally:
+        conn.close()
 
 
 def create_api_key(
@@ -48,9 +111,7 @@ def create_api_key(
             )
         req["workspaceName"] = workspace_name
 
-    api_response = auth.client.invoke_sdk_operation(
-        "/api/v1/api-key", "POST", req
-    )
+    api_response = auth.client.invoke_sdk_operation("/api/v1/api-key", "POST", req)
 
     if api_response.status_code == 200:
         try:
@@ -96,9 +157,7 @@ def delete_api_key(
     auth = egs.get_authenticated_session(authenticated_session)
     req = {"apiKey": api_key}
 
-    api_response = auth.client.invoke_sdk_operation(
-        "/api/v1/api-key", "DELETE", req
-    )
+    api_response = auth.client.invoke_sdk_operation("/api/v1/api-key", "DELETE", req)
 
     if api_response.status_code == 200:
         return api_response.data

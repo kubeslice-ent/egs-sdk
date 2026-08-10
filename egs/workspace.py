@@ -1,20 +1,38 @@
+from typing import List, Optional
+
 import egs
 from egs.authenticated_session import AuthenticatedSession
-from egs.exceptions import WorkspaceAlreadyExists, BadParameters, UnhandledException, Unauthorized
-from egs.internal.workspace.create_workspace_data import CreateWorkspaceRequest, CreateWorkspaceResponse
-from egs.internal.workspace.delete_workspace_data import DeleteWorkspaceRequest, DeleteWorkspaceResponse
-from egs.internal.workspace.list_workspaces_data import ListWorkspacesResponse, Workspace
-from egs.internal.workspace.workspace_kube_config_data import GenerateWorkspaceKubeConfigRequest, \
-    GenerateWorkspaceKubeConfigResponse
+from egs.exceptions import (
+    BadParameters,
+    Unauthorized,
+    UnhandledException,
+    WorkspaceAlreadyExists,
+)
+from egs.internal.workspace.create_workspace_data import (
+    CreateWorkspaceRequest,
+    CreateWorkspaceResponse,
+)
+from egs.internal.workspace.delete_workspace_data import (
+    DeleteWorkspaceRequest,
+    DeleteWorkspaceResponse,
+)
+from egs.internal.workspace.list_workspaces_data import (
+    ListWorkspacesResponse,
+    Workspace,
+)
+from egs.internal.workspace.workspace_kube_config_data import (
+    GenerateWorkspaceKubeConfigRequest,
+    GenerateWorkspaceKubeConfigResponse,
+)
 
 
 def create_workspace(
-        workspace_name: str,
-        clusters: [str],
-        namespaces: [str],
-        username: str,
-        email: str,
-        authenticated_session: AuthenticatedSession = None
+    workspace_name: str,
+    clusters: List[str],
+    namespaces: List[str],
+    username: str,
+    email: str,
+    authenticated_session: Optional[AuthenticatedSession] = None,
 ) -> str:
     auth = egs.get_authenticated_session(authenticated_session)
     req = CreateWorkspaceRequest(
@@ -22,9 +40,11 @@ def create_workspace(
         clusters=clusters,
         namespaces=namespaces,
         username=username,
-        email=email
+        email=email,
     )
-    api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace', 'POST', req)
+    api_response = auth.client.invoke_sdk_operation(
+        "/api/v1/slice-workspace", "POST", req
+    )
     if api_response.status_code == 409:
         raise WorkspaceAlreadyExists(api_response)
     elif api_response.status_code == 422:
@@ -33,39 +53,44 @@ def create_workspace(
         raise UnhandledException(api_response)
     return CreateWorkspaceResponse(**api_response.data).workspace_name
 
+
 def delete_workspace(
-        workspace_name: str,
-        authenticated_session: AuthenticatedSession = None
+    workspace_name: str, authenticated_session: Optional[AuthenticatedSession] = None
 ):
     auth = egs.get_authenticated_session(authenticated_session)
-    req = DeleteWorkspaceRequest(
-        workspace_name=workspace_name
+    req = DeleteWorkspaceRequest(workspace_name=workspace_name)
+    api_response = auth.client.invoke_sdk_operation(
+        "/api/v1/slice-workspace", "DELETE", req
     )
-    api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace', 'DELETE', req)
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return DeleteWorkspaceResponse(**api_response.data)
 
+
 def list_workspaces(
-        authenticated_session: AuthenticatedSession = None
+    authenticated_session: Optional[AuthenticatedSession] = None,
 ) -> ListWorkspacesResponse:
     auth = egs.get_authenticated_session(authenticated_session)
-    api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace/list', 'GET')
+    api_response = auth.client.invoke_sdk_operation(
+        "/api/v1/slice-workspace/list", "GET"
+    )
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return ListWorkspacesResponse(**api_response.data)
 
+
 def get_workspace_kubeconfig(
-        workspace_name: str,
-        cluster_name: str,
-        authenticated_session: AuthenticatedSession = None
+    workspace_name: str,
+    cluster_name: str,
+    authenticated_session: Optional[AuthenticatedSession] = None,
 ):
     auth = egs.get_authenticated_session(authenticated_session)
     req = GenerateWorkspaceKubeConfigRequest(
-        workspace_name=workspace_name,
-        cluster_name=cluster_name
+        workspace_name=workspace_name, cluster_name=cluster_name
     )
-    api_response = auth.client.invoke_sdk_operation('/api/v1/slice-workspace/kube-config', 'POST', req)
+    api_response = auth.client.invoke_sdk_operation(
+        "/api/v1/slice-workspace/kube-config", "POST", req
+    )
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return GenerateWorkspaceKubeConfigResponse(**api_response.data).kube_config
