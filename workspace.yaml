@@ -1,0 +1,8 @@
+workspaces:
+  - name: "purple"
+    clusters: ["worker-1"]
+    namespaces: ["purple"]
+    username: "test-user"
+    email: "test@example.com"
+    apiKeyValidity: "2024-12-31"
+    projectname: "avesha"

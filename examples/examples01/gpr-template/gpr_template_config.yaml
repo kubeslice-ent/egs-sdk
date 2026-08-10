@@ -1,0 +1,13 @@
+gpr_template:
+  - name: "from-sdk-1"
+    cluster_name: "worker-1"
+    instance_type: "a2-highgpu-2g"
+    gpu_shape: "NVIDIA-A100-SXM4-40GB"
+    memory_per_gpu: 40
+    number_of_gpus: 1
+    number_of_gpu_nodes: 1
+    exit_duration: "3h"
+    priority: 100
+    enforce_idle_timeout: false
+    enable_eviction: false
+    requeue_on_failure: false
