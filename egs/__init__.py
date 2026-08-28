@@ -4,6 +4,7 @@ global _authenticated_session
 from egs import (
     api_key,
     authentication,
+    continuum,
     gpr_template,
     gpr_template_binding,
     gpu_requests,
@@ -57,6 +58,14 @@ get_gpr_template_binding = gpr_template_binding.get_gpr_template_binding
 list_gpr_template_bindings = gpr_template_binding.list_gpr_template_bindings
 update_gpr_template_binding = gpr_template_binding.update_gpr_template_binding
 delete_gpr_template_binding = gpr_template_binding.delete_gpr_template_binding
+
+list_continuum_groups = continuum.list_continuum_groups
+create_continuum_group = continuum.create_continuum_group
+update_continuum_group = continuum.update_continuum_group
+delete_continuum_group = continuum.delete_continuum_group
+get_continuum_metrics = continuum.get_continuum_metrics
+get_continuum_group_detail = continuum.get_continuum_group_detail
+get_capacity_landscape = continuum.get_capacity_landscape
 
 
 def update_global_session(session):
