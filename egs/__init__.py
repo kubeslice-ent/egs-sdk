@@ -9,6 +9,7 @@ from egs import (
     gpu_requests,
     inference_endpoint,
     inventory_operations,
+    workload_placement,
     workspace,
 )
 
@@ -45,6 +46,12 @@ create_inference_endpoint_with_custom_model_spec = (
 )
 describe_inference_endpoint = inference_endpoint.describe_inference_endpoint
 delete_inference_endpoint = inference_endpoint.delete_inference_endpoint
+
+create_workload_placement_from_manifest = workload_placement.create_workload_placement_from_manifest
+get_workload_placement = workload_placement.get_workload_placement
+list_workload_placements = workload_placement.list_workload_placements
+list_workload_placements_by_workspace = workload_placement.list_workload_placements_by_workspace
+delete_workload_placement = workload_placement.delete_workload_placement
 
 create_gpr_template = gpr_template.create_gpr_template
 get_gpr_template = gpr_template.get_gpr_template

@@ -23,7 +23,7 @@ setup(
     url="https://github.com/kubeslice-ent/egs-sdk.git",
     packages=find_packages(),
     install_requires=[
-        # Add dependencies here, e.g., "requests>=2.25.1", "pandas>=1.3.0"
+        "PyYAML>=6.0",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
