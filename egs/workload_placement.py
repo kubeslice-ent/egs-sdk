@@ -120,7 +120,7 @@ def create_workload_placement_from_manifest(
     )
 
     auth = egs.get_authenticated_session(authenticated_session)
-    api_response = auth.client.invoke_sdk_operation('/api/v1/workload-placement/', 'POST', req)
+    api_response = auth.client.invoke_sdk_operation('/api/v1/workload-placement', 'POST', req)
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return WorkloadPlacementResponse(api_response.data)
@@ -143,7 +143,7 @@ def list_workload_placements(
         authenticated_session: AuthenticatedSession = None
 ) -> WorkloadPlacementResponse:
     auth = egs.get_authenticated_session(authenticated_session)
-    api_response = auth.client.invoke_sdk_operation('/api/v1/workload-placement/', 'GET')
+    api_response = auth.client.invoke_sdk_operation('/api/v1/workload-placement', 'GET')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
     return WorkloadPlacementResponse(api_response.data)
@@ -168,7 +168,7 @@ def delete_workload_placement(
 ) -> WorkloadPlacementResponse:
     _validate_required_text(workload_name, "workload_name")
     auth = egs.get_authenticated_session(authenticated_session)
-    path = '/api/v1/workload-placement/' + quote(workload_name, safe='')
+    path = '/api/v1/workload-placement' + quote(workload_name, safe='')
     api_response = auth.client.invoke_sdk_operation(path, 'DELETE')
     if api_response.status_code != 200:
         raise UnhandledException(api_response)
